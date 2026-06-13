@@ -126,8 +126,8 @@ function ProfilePage() {
               type="email"
               className="profile-input"
               value={form.correo}
-              onChange={handleChange}
-              required
+              readOnly
+              style={{ opacity: 0.7, cursor: 'not-allowed' }}
             />
           </div>
           <div className="profile-field">

@@ -85,6 +85,12 @@ function CartPage() {
 
   const handleConfirmar = async () => {
     if (cart.length === 0) return
+
+    if (!usuario || !usuario.id) {
+      Swal.fire({ icon: 'error', title: 'Sesión', text: 'Debes iniciar sesión para hacer un pedido' })
+      return
+    }
+
     setEnviando(true)
 
     const payload = {
@@ -109,11 +115,12 @@ function CartPage() {
       vaciarCarrito()
       navigate('/mis-pedidos')
     } catch (error) {
+      console.error('Error al crear pedido:', error)
       const errData = error.response?.data
-      const msg = errData?.mensaje || errData?.message || errData?.error || JSON.stringify(errData) || 'No se pudo crear el pedido'
+      const msg = errData?.mensaje || errData?.message || errData?.error || 'No se pudo crear el pedido. Verifica que el servidor esté corriendo.'
       Swal.fire({
         icon: 'error',
-        title: 'Error',
+        title: 'Error al realizar pedido',
         text: msg,
       })
     } finally {

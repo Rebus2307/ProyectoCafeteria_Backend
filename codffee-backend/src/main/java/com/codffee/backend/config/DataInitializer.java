@@ -73,6 +73,17 @@ public class DataInitializer implements CommandLineRunner {
             cliente.setFechaRegistro(LocalDateTime.now());
             usuarioRepository.save(cliente);
         }
+
+        if (!usuarioRepository.existsByCorreo("wilfridoadmin@gmail.com")) {
+            Usuario wilfridoAdmin = new Usuario();
+            wilfridoAdmin.setNombre("Wilfrido Admin");
+            wilfridoAdmin.setCorreo("wilfridoadmin@gmail.com");
+            wilfridoAdmin.setContrasena(passwordEncoder.encode("Wilfrido23"));
+            wilfridoAdmin.setRol(Rol.ADMIN);
+            wilfridoAdmin.setActivo(true);
+            wilfridoAdmin.setFechaRegistro(LocalDateTime.now());
+            usuarioRepository.save(wilfridoAdmin);
+        }
     }
 
     private void crearCategoriasYProductosIniciales() {

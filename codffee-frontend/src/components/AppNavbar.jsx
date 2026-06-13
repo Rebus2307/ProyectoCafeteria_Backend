@@ -18,10 +18,13 @@ const staffLinks = [
   { path: '/staff/pedidos', label: 'Pedidos', icon: 'assignment' },
 ]
 
+const PROFILE_PHOTO_KEY = 'codffee_foto_perfil'
+
 function AppNavbar() {
   const navigate = useNavigate()
   const location = useLocation()
   const usuario = obtenerUsuario()
+  const fotoPerfil = localStorage.getItem(PROFILE_PHOTO_KEY)
 
   const links = usuario?.rol === 'ADMIN' ? adminLinks
     : usuario?.rol === 'PERSONAL' ? staffLinks
@@ -51,8 +54,12 @@ function AppNavbar() {
           ))}
         </nav>
         <div className="navbar-user">
-          <Link to="/perfil" className="navbar-user-avatar-link" title="Mi perfil">
-            <span className="material-symbols-outlined navbar-user-avatar-icon">account_circle</span>
+          <Link to="/perfil" className="navbar-user-avatar-link" title="Mi perfil" style={{ borderRadius: '50%', overflow: 'hidden' }}>
+            {fotoPerfil ? (
+              <img src={fotoPerfil} alt="Foto" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+            ) : (
+              <span className="material-symbols-outlined navbar-user-avatar-icon">account_circle</span>
+            )}
           </Link>
           <div className="navbar-user-info">
             <span className="navbar-user-name">{usuario?.nombre}</span>

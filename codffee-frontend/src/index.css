@@ -63,7 +63,7 @@ body {
 .main-content { flex: 1; width: 100%; }
 
 .staff-layout { display: flex; min-height: 100vh; }
-.staff-layout .main-content { flex: 1; overflow-y: auto; padding: 24px; max-width: 1280px; margin: 0 auto; width: 100%; }
+.staff-layout .main-content { flex: 1; min-width: 0; overflow-y: auto; padding: 24px; }
 
 /* ========== NAVBAR ========== */
 .navbar-codffee {
@@ -273,6 +273,13 @@ body {
 .login-btn:hover { background: var(--surface-tint); }
 .login-btn:active { transform: scale(0.98); }
 .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.login-register-btn {
+  margin-top: 12px;
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+.login-register-btn:hover { background: var(--primary-fixed); }
 .login-card-footer {
   padding: 16px 24px;
   background: var(--surface-container-low);
@@ -406,6 +413,27 @@ body {
   width: fit-content;
 }
 .product-card-btn { margin-top: auto; }
+.product-card-qty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.product-card-qty-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--surface-container-high);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--on-surface);
+  transition: background 0.2s;
+}
+.product-card-qty-btn:hover { background: var(--secondary-container); }
+.product-card-qty-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.product-card-qty-btn .material-symbols-outlined { font-size: 18px; }
+.product-card-qty-value { font-size: 18px; font-weight: 600; min-width: 24px; text-align: center; }
 
 /* ========== BUTTONS ========== */
 .btn-codffee-primary {
@@ -606,7 +634,7 @@ body {
 .order-card-total-cancelled { text-decoration: line-through; color: var(--on-surface-variant); }
 
 /* ========== STAFF ORDERS PAGE ========== */
-.staff-orders-page { width: 100%; }
+.staff-orders-page { width: 100%; max-width: 1280px; margin: 0 auto; }
 .staff-orders-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
 .staff-orders-title { font-family: 'Source Serif 4', serif; font-size: 32px; font-weight: 600; color: var(--primary); margin: 0; }
 .staff-orders-subtitle { font-size: 16px; color: var(--on-surface-variant); margin: 4px 0 0; }
@@ -815,7 +843,7 @@ body {
 .dashboard-card-info .dashboard-card-value { color: #0277bd; }
 
 /* ========== ADMIN DASHBOARD ========== */
-.admin-dashboard { width: 100%; }
+.admin-dashboard { width: 100%; max-width: 1280px; margin: 0 auto; }
 .admin-dashboard-header { margin-bottom: 32px; }
 .admin-dashboard-title { font-family: 'Source Serif 4', serif; font-size: 32px; font-weight: 600; color: var(--on-surface); margin: 0; }
 .admin-dashboard-subtitle { font-size: 16px; color: var(--on-surface-variant); margin: 4px 0 0; }
@@ -898,7 +926,7 @@ body {
 .admin-system-health p { font-size: 14px; margin: 0; opacity: 0.8; }
 
 /* ========== REPORTS PAGE ========== */
-.reports-page { width: 100%; }
+.reports-page { width: 100%; max-width: 1280px; margin: 0 auto; }
 .reports-header {
   display: flex;
   justify-content: space-between;
@@ -1038,6 +1066,7 @@ body {
 }
 .login-register-link:hover { text-decoration: underline; }
 .login-card-footer-row { margin-bottom: 12px; }
+.mt-lg { margin-top: 20px; }
 
 /* ========== PROFILE PAGE ========== */
 .profile-page { padding: 24px 40px; max-width: 720px; margin: 0 auto; width: 100%; }
@@ -1075,7 +1104,7 @@ body {
 .profile-save-btn { margin-top: 8px; }
 
 /* ========== ADMIN USERS PAGE ========== */
-.admin-users-page { width: 100%; }
+.admin-users-page { width: 100%; max-width: 1280px; margin: 0 auto; }
 .admin-users-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
 .admin-users-title { font-family: 'Source Serif 4', serif; font-size: 32px; font-weight: 600; color: var(--primary); margin: 0; }
 .admin-users-subtitle { font-size: 16px; color: var(--on-surface-variant); margin: 4px 0 0; }

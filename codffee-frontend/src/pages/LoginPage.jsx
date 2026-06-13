@@ -92,6 +92,12 @@ function LoginPage() {
                 {cargando ? 'Ingresando...' : 'Iniciar sesión'}
               </button>
             </form>
+            <div className="login-card-footer-row mt-lg">
+              <button className="login-btn login-register-btn" onClick={() => navigate('/registro')}>
+                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>person_add</span>
+                Crear cuenta nueva (Cliente)
+              </button>
+            </div>
           </div>
           <div className="login-card-footer">
             <div className="login-card-footer-row mb-3">
@@ -106,6 +112,7 @@ function LoginPage() {
             <p className="login-test-item">Admin: admin@codffee.com / 123456</p>
             <p className="login-test-item">Cliente: cliente@codffee.com / 123456</p>
             <p className="login-test-item">Personal: personal@codffee.com / 123456</p>
+            <p className="login-test-item">Admin 2: wilfridoadmin@gmail.com / Wilfrido23</p>
           </div>
         </div>
         <p className="login-footer-note">Acceso exclusivo para personal y estudiantes autorizados.</p>

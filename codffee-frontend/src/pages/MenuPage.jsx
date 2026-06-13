@@ -27,6 +27,7 @@ function MenuPage() {
   const [cargando, setCargando] = useState(true)
   const [categoriaActiva, setCategoriaActiva] = useState(null)
   const [busqueda, setBusqueda] = useState('')
+  const [cartVersion, setCartVersion] = useState(0)
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -61,7 +62,7 @@ function MenuPage() {
     return Math.max(0, producto.stock - enCarrito)
   }
 
-  const agregarAlCarrito = (producto) => {
+  const agregarAlCarrito = (producto, cantidad = 1) => {
     const stockDisp = getStockDisponible(producto)
     if (stockDisp === 0) {
       Swal.fire({
@@ -72,16 +73,26 @@ function MenuPage() {
       return
     }
 
+    if (cantidad > stockDisp) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Stock insuficiente',
+        text: `Solo hay ${stockDisp} unidades disponibles de ${producto.nombre}`,
+      })
+      return
+    }
+
     const cart = getCart()
     const existente = cart.find((item) => item.producto.id === producto.id)
 
     if (existente) {
-      existente.cantidad += 1
+      existente.cantidad += cantidad
     } else {
-      cart.push({ producto, cantidad: 1 })
+      cart.push({ producto, cantidad })
     }
 
     saveCart(cart)
+    setCartVersion((v) => v + 1)
     Swal.fire({
       icon: 'success',
       title: 'Agregado',
@@ -98,9 +109,10 @@ function MenuPage() {
       if (p.categoria?.id !== cat.id && p.categoria?.nombre !== cat.nombre) return false
     }
     if (busqueda) {
-      const term = busqueda.toLowerCase()
-      const matchNombre = p.nombre?.toLowerCase().includes(term)
-      const matchDesc = p.descripcion?.toLowerCase().includes(term)
+      const normalize = (s) => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+      const term = normalize(busqueda)
+      const matchNombre = normalize(p.nombre).includes(term)
+      const matchDesc = normalize(p.descripcion).includes(term)
       if (!matchNombre && !matchDesc) return false
     }
     return true
@@ -163,7 +175,7 @@ function MenuPage() {
             <div className="productos-grid">
               {productosFiltrados.map((producto) => (
                 <ProductCard
-                  key={producto.id}
+                  key={producto.id + '-' + cartVersion}
                   producto={producto}
                   stockDisponible={getStockDisponible(producto)}
                   onAgregar={agregarAlCarrito}
