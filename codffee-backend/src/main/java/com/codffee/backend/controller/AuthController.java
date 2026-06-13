@@ -2,6 +2,7 @@ package com.codffee.backend.controller;
 
 import com.codffee.backend.dto.LoginRequest;
 import com.codffee.backend.dto.LoginResponse;
+import com.codffee.backend.dto.RegisterRequest;
 import com.codffee.backend.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -19,5 +20,10 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         return authService.login(loginRequest);
+    }
+
+    @PostMapping("/register")
+    public LoginResponse register(@Valid @RequestBody RegisterRequest registerRequest) {
+        return authService.register(registerRequest);
     }
 }

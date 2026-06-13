@@ -34,11 +34,11 @@ function AdminDashboardPage() {
     cancelados: pedidos.filter((p) => p.estado === 'CANCELADO').length,
     totalVendido: pedidos
       .filter((p) => p.estado === 'ENTREGADO')
-      .reduce((sum, p) => sum + Number(p.total || 0), 0),
+      .reduce((sum, p) => sum + Number(p.total || p.totalPedido || 0), 0),
   }
 
   const ultimosPedidos = [...pedidos]
-    .sort((a, b) => new Date(b.fecha || 0) - new Date(a.fecha || 0))
+    .sort((a, b) => new Date(b.fechaHora || b.fecha || 0) - new Date(a.fechaHora || a.fecha || 0))
     .slice(0, 5)
 
   if (cargando) return <Loading />
@@ -97,8 +97,8 @@ function AdminDashboardPage() {
                   <div className="admin-recent-id">#{p.id}</div>
                   <div>
                     <p className="admin-recent-name">{p.usuario?.nombre || '—'}</p>
-                    <p className="admin-recent-time">
-                      {p.fecha ? new Date(p.fecha).toLocaleString('es-MX', {
+                      <p className="admin-recent-time">
+                      {p.fechaHora || p.fecha ? new Date(p.fechaHora || p.fecha).toLocaleString('es-MX', {
                         hour: '2-digit', minute: '2-digit'
                       }) : '—'}
                     </p>

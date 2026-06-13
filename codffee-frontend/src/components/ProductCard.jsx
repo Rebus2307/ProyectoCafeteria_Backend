@@ -1,8 +1,9 @@
 import { useState } from 'react'
 
-function ProductCard({ producto, onAgregar }) {
+function ProductCard({ producto, onAgregar, stockDisponible }) {
   const [agregando, setAgregando] = useState(false)
-  const sinStock = producto.stock === 0
+  const sinStock = stockDisponible === 0
+  const hayImagen = producto.imagenUrl && producto.imagenUrl.trim() !== ''
 
   const handleAgregar = () => {
     setAgregando(true)
@@ -13,15 +14,23 @@ function ProductCard({ producto, onAgregar }) {
   return (
     <article className="product-card">
       <div className="product-card-image">
-        <div className="product-card-img-placeholder">
+        {hayImagen ? (
+          <img
+            src={producto.imagenUrl}
+            alt={producto.nombre}
+            className="product-card-img"
+            onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }}
+          />
+        ) : null}
+        <div className="product-card-img-placeholder" style={{ display: hayImagen ? 'none' : 'flex' }}>
           <span className="material-symbols-outlined">local_cafe</span>
         </div>
         {sinStock ? (
           <span className="product-card-stock product-card-stock-out">Agotado</span>
-        ) : producto.stock <= 5 ? (
-          <span className="product-card-stock product-card-stock-low">Solo {producto.stock}!</span>
+        ) : stockDisponible <= 5 ? (
+          <span className="product-card-stock product-card-stock-low">Solo {stockDisponible}!</span>
         ) : (
-          <span className="product-card-stock product-card-stock-ok">{producto.stock} disp.</span>
+          <span className="product-card-stock product-card-stock-ok">{stockDisponible} disp.</span>
         )}
       </div>
       <div className="product-card-body">

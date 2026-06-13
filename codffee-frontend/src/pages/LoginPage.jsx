@@ -94,6 +94,14 @@ function LoginPage() {
             </form>
           </div>
           <div className="login-card-footer">
+            <div className="login-card-footer-row mb-3">
+              <p className="font-body-sm text-center">
+                ¿No tienes cuenta?{' '}
+                <a href="/registro" className="login-register-link" onClick={(e) => { e.preventDefault(); navigate('/registro') }}>
+                  Regístrate aquí
+                </a>
+              </p>
+            </div>
             <p className="login-test-title">Cuentas de prueba:</p>
             <p className="login-test-item">Admin: admin@codffee.com / 123456</p>
             <p className="login-test-item">Cliente: cliente@codffee.com / 123456</p>

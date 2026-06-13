@@ -11,6 +11,7 @@ const adminLinks = [
   { path: '/admin', label: 'Dashboard', icon: 'dashboard' },
   { path: '/staff/pedidos', label: 'Pedidos', icon: 'assignment' },
   { path: '/admin/reportes', label: 'Reportes', icon: 'analytics' },
+  { path: '/admin/usuarios', label: 'Usuarios', icon: 'group' },
 ]
 
 const staffLinks = [
@@ -50,6 +51,9 @@ function AppNavbar() {
           ))}
         </nav>
         <div className="navbar-user">
+          <Link to="/perfil" className="navbar-user-avatar-link" title="Mi perfil">
+            <span className="material-symbols-outlined navbar-user-avatar-icon">account_circle</span>
+          </Link>
           <div className="navbar-user-info">
             <span className="navbar-user-name">{usuario?.nombre}</span>
             <span className="navbar-user-role">{usuario?.rol}</span>

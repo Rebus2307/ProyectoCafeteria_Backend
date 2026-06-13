@@ -109,10 +109,12 @@ function CartPage() {
       vaciarCarrito()
       navigate('/mis-pedidos')
     } catch (error) {
+      const errData = error.response?.data
+      const msg = errData?.mensaje || errData?.message || errData?.error || JSON.stringify(errData) || 'No se pudo crear el pedido'
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: error.response?.data?.mensaje || 'No se pudo crear el pedido',
+        text: msg,
       })
     } finally {
       setEnviando(false)

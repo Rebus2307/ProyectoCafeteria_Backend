@@ -121,7 +121,11 @@ public class PedidoService {
         pedidoGuardado.setTotal(total);
         Pedido pedidoFinal = pedidoRepository.save(pedidoGuardado);
 
-        enviarCorreoConfirmacionPedido(usuario, pedidoFinal, resumenProductos.toString());
+        try {
+            enviarCorreoConfirmacionPedido(usuario, pedidoFinal, resumenProductos.toString());
+        } catch (Exception e) {
+            System.out.println("El pedido se creó, pero no se pudo enviar el correo: " + e.getMessage());
+        }
 
         return pedidoFinal;
     }

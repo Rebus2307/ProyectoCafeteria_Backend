@@ -5,6 +5,11 @@ export const login = async (credenciales) => {
   return response.data
 }
 
+export const registrarCliente = async (datos) => {
+  const response = await api.post('/auth/register', datos)
+  return response.data
+}
+
 export const logout = () => {
   localStorage.removeItem('token')
   localStorage.removeItem('usuario')
@@ -30,4 +35,9 @@ export const obtenerUsuario = () => {
 
 export const obtenerToken = () => {
   return localStorage.getItem('token')
+}
+
+export const actualizarPerfil = async (datos) => {
+  const response = await api.put('/perfil', datos)
+  return response.data
 }

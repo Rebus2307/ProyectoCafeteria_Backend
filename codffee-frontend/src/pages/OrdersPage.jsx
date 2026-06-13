@@ -53,7 +53,7 @@ function OrdersPage() {
                   <StatusBadge estado={pedido.estado} />
                 </div>
                 <span className="order-card-fecha">
-                  {pedido.fecha ? new Date(pedido.fecha).toLocaleString('es-MX', {
+                  {pedido.fechaHora || pedido.fecha ? new Date(pedido.fechaHora || pedido.fecha).toLocaleString('es-MX', {
                     year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                   }) : '—'}
                 </span>

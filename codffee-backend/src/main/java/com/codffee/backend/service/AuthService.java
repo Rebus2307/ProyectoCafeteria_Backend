@@ -2,6 +2,8 @@ package com.codffee.backend.service;
 
 import com.codffee.backend.dto.LoginRequest;
 import com.codffee.backend.dto.LoginResponse;
+import com.codffee.backend.dto.RegisterRequest;
+import com.codffee.backend.entity.Rol;
 import com.codffee.backend.entity.Usuario;
 import com.codffee.backend.exception.SolicitudInvalidaException;
 import com.codffee.backend.repository.UsuarioRepository;
@@ -24,6 +26,25 @@ public class AuthService {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+    }
+
+    public LoginResponse register(RegisterRequest registerRequest) {
+        if (usuarioRepository.existsByCorreo(registerRequest.getCorreo())) {
+            throw new SolicitudInvalidaException("Ya existe un usuario con ese correo");
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre(registerRequest.getNombre());
+        usuario.setCorreo(registerRequest.getCorreo());
+        usuario.setContrasena(passwordEncoder.encode(registerRequest.getContrasena()));
+        usuario.setRol(Rol.CLIENTE);
+        usuario.setActivo(true);
+        usuario.setFechaRegistro(java.time.LocalDateTime.now());
+
+        Usuario usuarioCreado = usuarioRepository.save(usuario);
+
+        String token = jwtService.generarToken(usuarioCreado);
+        return LoginResponse.fromEntity(usuarioCreado, token);
     }
 
     public LoginResponse login(LoginRequest loginRequest) {

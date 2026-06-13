@@ -157,7 +157,7 @@ function StaffOrdersPage() {
                       </div>
                     </td>
                     <td className="staff-order-fecha">
-                      {pedido.fecha ? new Date(pedido.fecha).toLocaleTimeString('es-MX', {
+                      {pedido.fechaHora || pedido.fecha ? new Date(pedido.fechaHora || pedido.fecha).toLocaleTimeString('es-MX', {
                         hour: '2-digit', minute: '2-digit'
                       }) : '—'}
                     </td>

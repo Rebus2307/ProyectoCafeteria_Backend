@@ -5,6 +5,8 @@ const navItems = [
   { path: '/admin', label: 'Dashboard', icon: 'dashboard', roles: ['ADMIN'] },
   { path: '/staff/pedidos', label: 'Order Queue', icon: 'assignment', roles: ['ADMIN', 'PERSONAL'] },
   { path: '/admin/reportes', label: 'Reports', icon: 'analytics', roles: ['ADMIN'] },
+  { path: '/admin/usuarios', label: 'Usuarios', icon: 'group', roles: ['ADMIN'] },
+  { path: '/perfil', label: 'Mi Perfil', icon: 'account_circle', roles: ['ADMIN', 'PERSONAL'] },
 ]
 
 const footerItems = [

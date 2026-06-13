@@ -1,11 +1,14 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import MenuPage from './pages/MenuPage'
 import CartPage from './pages/CartPage'
 import OrdersPage from './pages/OrdersPage'
 import StaffOrdersPage from './pages/StaffOrdersPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
+import AdminUsersPage from './pages/AdminUsersPage'
 import ReportsPage from './pages/ReportsPage'
+import ProfilePage from './pages/ProfilePage'
 import ProtectedRoute from './routes/ProtectedRoute'
 import RoleRoute from './routes/RoleRoute'
 import AppNavbar from './components/AppNavbar'
@@ -39,9 +42,15 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/registro" element={<RegisterPage />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
 
         <Route element={<ProtectedRoute />}>
+          {/* Perfil - cualquier rol autenticado */}
+          <Route path="/perfil" element={<ClientLayout />}>
+            <Route index element={<ProfilePage />} />
+          </Route>
+
           {/* CLIENTE routes */}
           <Route element={<RoleRoute roles={['CLIENTE']} />}>
             <Route element={<ClientLayout />}>
@@ -63,6 +72,7 @@ function App() {
             <Route element={<StaffLayout />}>
               <Route path="/admin" element={<AdminDashboardPage />} />
               <Route path="/admin/reportes" element={<ReportsPage />} />
+              <Route path="/admin/usuarios" element={<AdminUsersPage />} />
             </Route>
           </Route>
         </Route>

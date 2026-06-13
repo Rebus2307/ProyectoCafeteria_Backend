@@ -50,19 +50,32 @@ function MenuPage() {
     cargarDatos()
   }, [])
 
+  const getCantidadEnCarrito = (productoId) => {
+    const cart = getCart()
+    const item = cart.find((i) => i.producto.id === productoId)
+    return item ? item.cantidad : 0
+  }
+
+  const getStockDisponible = (producto) => {
+    const enCarrito = getCantidadEnCarrito(producto.id)
+    return Math.max(0, producto.stock - enCarrito)
+  }
+
   const agregarAlCarrito = (producto) => {
+    const stockDisp = getStockDisponible(producto)
+    if (stockDisp === 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Stock insuficiente',
+        text: `No hay más unidades disponibles de ${producto.nombre}`,
+      })
+      return
+    }
+
     const cart = getCart()
     const existente = cart.find((item) => item.producto.id === producto.id)
 
     if (existente) {
-      if (existente.cantidad >= producto.stock) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'Stock insuficiente',
-          text: `Solo hay ${producto.stock} unidades disponibles de ${producto.nombre}`,
-        })
-        return
-      }
       existente.cantidad += 1
     } else {
       cart.push({ producto, cantidad: 1 })
@@ -152,6 +165,7 @@ function MenuPage() {
                 <ProductCard
                   key={producto.id}
                   producto={producto}
+                  stockDisponible={getStockDisponible(producto)}
                   onAgregar={agregarAlCarrito}
                 />
               ))}
