@@ -26,8 +26,7 @@ public class DataInitializer implements CommandLineRunner {
             UsuarioRepository usuarioRepository,
             CategoriaRepository categoriaRepository,
             ProductoRepository productoRepository,
-            PasswordEncoder passwordEncoder
-    ) {
+            PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.categoriaRepository = categoriaRepository;
         this.productoRepository = productoRepository;
@@ -41,71 +40,59 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void crearUsuariosIniciales() {
-        if (!usuarioRepository.existsByCorreo("admin@codffee.com")) {
+        // 1. Administrador: codffee.notificaciones@gmail.com / Admin123
+        if (!usuarioRepository.existsByCorreo("codffee.notificaciones@gmail.com")) {
             Usuario admin = new Usuario();
             admin.setNombre("Administrador Codffee");
-            admin.setCorreo("admin@codffee.com");
-            admin.setContrasena(passwordEncoder.encode("123456"));
+            admin.setCorreo("codffee.notificaciones@gmail.com");
+            admin.setContrasena(passwordEncoder.encode("Admin123"));
             admin.setRol(Rol.ADMIN);
             admin.setActivo(true);
             admin.setFechaRegistro(LocalDateTime.now());
             usuarioRepository.save(admin);
         }
 
-        if (!usuarioRepository.existsByCorreo("personal@codffee.com")) {
+        // 2. Personal: wcruzm1800@alumnmo.ipn.mx / Personal123
+        if (!usuarioRepository.existsByCorreo("wcruzm1800@alumnmo.ipn.mx")) {
             Usuario personal = new Usuario();
             personal.setNombre("Personal Cafetería");
-            personal.setCorreo("personal@codffee.com");
-            personal.setContrasena(passwordEncoder.encode("123456"));
+            personal.setCorreo("wcruzm1800@alumnmo.ipn.mx");
+            personal.setContrasena(passwordEncoder.encode("Personal123"));
             personal.setRol(Rol.PERSONAL);
             personal.setActivo(true);
             personal.setFechaRegistro(LocalDateTime.now());
             usuarioRepository.save(personal);
         }
 
-        if (!usuarioRepository.existsByCorreo("cliente@codffee.com")) {
+        // 3. Cliente: willy2019031000merlin@gmail.com / Cliente123
+        if (!usuarioRepository.existsByCorreo("willy2019031000merlin@gmail.com")) {
             Usuario cliente = new Usuario();
             cliente.setNombre("Cliente Prueba");
-            cliente.setCorreo("cliente@codffee.com");
-            cliente.setContrasena(passwordEncoder.encode("123456"));
+            cliente.setCorreo("willy2019031000merlin@gmail.com");
+            cliente.setContrasena(passwordEncoder.encode("Cliente123"));
             cliente.setRol(Rol.CLIENTE);
             cliente.setActivo(true);
             cliente.setFechaRegistro(LocalDateTime.now());
             usuarioRepository.save(cliente);
-        }
-
-        if (!usuarioRepository.existsByCorreo("wilfridoadmin@gmail.com")) {
-            Usuario wilfridoAdmin = new Usuario();
-            wilfridoAdmin.setNombre("Wilfrido Admin");
-            wilfridoAdmin.setCorreo("wilfridoadmin@gmail.com");
-            wilfridoAdmin.setContrasena(passwordEncoder.encode("Wilfrido23"));
-            wilfridoAdmin.setRol(Rol.ADMIN);
-            wilfridoAdmin.setActivo(true);
-            wilfridoAdmin.setFechaRegistro(LocalDateTime.now());
-            usuarioRepository.save(wilfridoAdmin);
         }
     }
 
     private void crearCategoriasYProductosIniciales() {
         Categoria bebidas = crearCategoriaSiNoExiste(
                 "Bebidas",
-                "Cafés, tés, jugos y otras bebidas"
-        );
+                "Cafés, tés, jugos y otras bebidas");
 
         Categoria desayunos = crearCategoriaSiNoExiste(
                 "Desayunos",
-                "Alimentos para iniciar el día"
-        );
+                "Alimentos para iniciar el día");
 
         Categoria postres = crearCategoriaSiNoExiste(
                 "Postres",
-                "Pan dulce, galletas y productos dulces"
-        );
+                "Pan dulce, galletas y productos dulces");
 
         Categoria snacks = crearCategoriaSiNoExiste(
                 "Snacks",
-                "Productos rápidos para consumir entre clases"
-        );
+                "Productos rápidos para consumir entre clases");
 
         crearProductoSiNoExiste(
                 "Café americano",
@@ -113,8 +100,7 @@ public class DataInitializer implements CommandLineRunner {
                 new BigDecimal("25.00"),
                 30,
                 "https://example.com/cafe-americano.jpg",
-                bebidas
-        );
+                bebidas);
 
         crearProductoSiNoExiste(
                 "Capuchino",
@@ -122,8 +108,7 @@ public class DataInitializer implements CommandLineRunner {
                 new BigDecimal("38.00"),
                 20,
                 "https://example.com/capuchino.jpg",
-                bebidas
-        );
+                bebidas);
 
         crearProductoSiNoExiste(
                 "Sándwich de jamón",
@@ -131,8 +116,7 @@ public class DataInitializer implements CommandLineRunner {
                 new BigDecimal("45.00"),
                 15,
                 "https://example.com/sandwich.jpg",
-                desayunos
-        );
+                desayunos);
 
         crearProductoSiNoExiste(
                 "Mollete",
@@ -140,8 +124,7 @@ public class DataInitializer implements CommandLineRunner {
                 new BigDecimal("35.00"),
                 18,
                 "https://example.com/mollete.jpg",
-                desayunos
-        );
+                desayunos);
 
         crearProductoSiNoExiste(
                 "Dona de chocolate",
@@ -149,8 +132,7 @@ public class DataInitializer implements CommandLineRunner {
                 new BigDecimal("22.00"),
                 25,
                 "https://example.com/dona.jpg",
-                postres
-        );
+                postres);
 
         crearProductoSiNoExiste(
                 "Papas fritas",
@@ -158,8 +140,7 @@ public class DataInitializer implements CommandLineRunner {
                 new BigDecimal("18.00"),
                 40,
                 "https://example.com/papas.jpg",
-                snacks
-        );
+                snacks);
     }
 
     private Categoria crearCategoriaSiNoExiste(String nombre, String descripcion) {
@@ -179,8 +160,7 @@ public class DataInitializer implements CommandLineRunner {
             BigDecimal precio,
             Integer stock,
             String imagenUrl,
-            Categoria categoria
-    ) {
+            Categoria categoria) {
         if (!productoRepository.existsByNombre(nombre)) {
             Producto producto = new Producto();
             producto.setNombre(nombre);

@@ -1114,6 +1114,12 @@ body {
 .btn-primary { background-color: var(--primary) !important; border-color: var(--primary) !important; }
 .btn-primary:hover { background-color: var(--on-primary-fixed-variant) !important; border-color: var(--on-primary-fixed-variant) !important; }
 
+@media (min-width: 769px) {
+  .d-md-none {
+    display: none !important;
+  }
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .navbar-codffee-inner { padding: 12px 16px; }

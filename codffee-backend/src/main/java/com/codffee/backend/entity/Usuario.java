@@ -23,7 +23,6 @@ public class Usuario {
     @Column(nullable = false, unique = true, length = 255)
     private String correo;
 
-    @NotBlank(message = "La contraseña es obligatoria")
     @Column(nullable = false, length = 255)
     private String contrasena;
 

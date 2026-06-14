@@ -14,6 +14,14 @@ import RoleRoute from './routes/RoleRoute'
 import AppNavbar from './components/AppNavbar'
 import StaffSidebar from './components/StaffSidebar'
 import { Outlet } from 'react-router-dom'
+import { obtenerUsuario } from './services/authService'
+
+function HomeRedirect() {
+  const usuario = obtenerUsuario()
+  if (!usuario) return <Navigate to="/login" replace />
+  const routes = { CLIENTE: '/menu', PERSONAL: '/staff/pedidos', ADMIN: '/admin' }
+  return <Navigate to={routes[usuario.rol] || '/menu'} replace />
+}
 
 function ClientLayout() {
   return (
@@ -43,7 +51,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/registro" element={<RegisterPage />} />
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<HomeRedirect />} />
 
         <Route element={<ProtectedRoute />}>
           {/* Perfil - cualquier rol autenticado */}

@@ -41,6 +41,9 @@ public class UsuarioService {
     }
 
     public Usuario crear(Usuario usuario) {
+        if (usuario.getContrasena() == null || usuario.getContrasena().isBlank()) {
+            throw new SolicitudInvalidaException("La contraseña es obligatoria");
+        }
         if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
             throw new SolicitudInvalidaException("Ya existe un usuario con ese correo");
         }
@@ -80,7 +83,6 @@ public class UsuarioService {
 
     public void eliminar(Long id) {
         Usuario usuario = buscarPorId(id);
-        usuario.setActivo(false);
-        usuarioRepository.save(usuario);
+        usuarioRepository.delete(usuario);
     }
 }

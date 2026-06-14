@@ -18,13 +18,11 @@ const staffLinks = [
   { path: '/staff/pedidos', label: 'Pedidos', icon: 'assignment' },
 ]
 
-const PROFILE_PHOTO_KEY = 'codffee_foto_perfil'
-
 function AppNavbar() {
   const navigate = useNavigate()
   const location = useLocation()
   const usuario = obtenerUsuario()
-  const fotoPerfil = localStorage.getItem(PROFILE_PHOTO_KEY)
+  const fotoPerfil = usuario ? localStorage.getItem(`codffee_foto_perfil_${usuario.id}`) : null
 
   const links = usuario?.rol === 'ADMIN' ? adminLinks
     : usuario?.rol === 'PERSONAL' ? staffLinks

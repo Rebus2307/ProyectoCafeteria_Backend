@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { obtenerUsuario, logout, actualizarPerfil } from '../services/authService'
 
-const PROFILE_PHOTO_KEY = 'codffee_foto_perfil'
-
 function ProfilePage() {
   const navigate = useNavigate()
   const usuario = obtenerUsuario()
+  const getFotoKey = () => usuario ? `codffee_foto_perfil_${usuario.id}` : 'codffee_foto_perfil'
 
   const [form, setForm] = useState({
     nombre: usuario?.nombre || '',
@@ -15,7 +14,7 @@ function ProfilePage() {
     contrasena: '',
     confirmarContrasena: '',
   })
-  const [foto, setFoto] = useState(localStorage.getItem(PROFILE_PHOTO_KEY) || '')
+  const [foto, setFoto] = useState(localStorage.getItem(getFotoKey()) || '')
   const [cargando, setCargando] = useState(false)
 
   const handleChange = (e) => {
@@ -30,14 +29,14 @@ function ProfilePage() {
     reader.onload = (event) => {
       const base64 = event.target.result
       setFoto(base64)
-      localStorage.setItem(PROFILE_PHOTO_KEY, base64)
+      localStorage.setItem(getFotoKey(), base64)
     }
     reader.readAsDataURL(file)
   }
 
   const handleQuitarFoto = () => {
     setFoto('')
-    localStorage.removeItem(PROFILE_PHOTO_KEY)
+    localStorage.removeItem(getFotoKey())
   }
 
   const handleSubmit = async (e) => {

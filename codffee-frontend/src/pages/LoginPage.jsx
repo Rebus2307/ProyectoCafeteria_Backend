@@ -1,12 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import { login, guardarSesion } from '../services/authService'
+import { login, guardarSesion, obtenerUsuario } from '../services/authService'
 
 function LoginPage() {
   const navigate = useNavigate()
   const [form, setForm] = useState({ correo: '', contrasena: '' })
   const [cargando, setCargando] = useState(false)
+
+  useEffect(() => {
+    const usuario = obtenerUsuario()
+    if (usuario) {
+      const routes = { CLIENTE: '/menu', PERSONAL: '/staff/pedidos', ADMIN: '/admin' }
+      navigate(routes[usuario.rol] || '/menu', { replace: true })
+    }
+  }, [navigate])
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -108,11 +116,6 @@ function LoginPage() {
                 </a>
               </p>
             </div>
-            <p className="login-test-title">Cuentas de prueba:</p>
-            <p className="login-test-item">Admin: admin@codffee.com / 123456</p>
-            <p className="login-test-item">Cliente: cliente@codffee.com / 123456</p>
-            <p className="login-test-item">Personal: personal@codffee.com / 123456</p>
-            <p className="login-test-item">Admin 2: wilfridoadmin@gmail.com / Wilfrido23</p>
           </div>
         </div>
         <p className="login-footer-note">Acceso exclusivo para personal y estudiantes autorizados.</p>

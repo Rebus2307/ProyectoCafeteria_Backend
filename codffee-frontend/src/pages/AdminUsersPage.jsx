@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Swal from 'sweetalert2'
-import { obtenerUsuarios, crearUsuario, actualizarUsuario } from '../services/usuarioService'
+import { obtenerUsuarios, crearUsuario, actualizarUsuario, eliminarUsuario } from '../services/usuarioService'
 import Loading from '../components/Loading'
 
 const roles = ['CLIENTE', 'PERSONAL', 'ADMIN']
@@ -108,6 +108,31 @@ function AdminUsersPage() {
     }
   }
 
+  const handleEliminar = async (usuario) => {
+    const result = await Swal.fire({
+      title: '¿Eliminar usuario?',
+      text: `¿Estás seguro de eliminar permanentemente a ${usuario.nombre} de la base de datos? Esta acción no se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ba1a1a',
+    })
+    if (!result.isConfirmed) return
+
+    try {
+      await eliminarUsuario(usuario.id)
+      Swal.fire({ icon: 'success', title: 'Usuario eliminado', timer: 1500, showConfirmButton: false })
+      cargarUsuarios()
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.response?.data?.mensaje || 'No se pudo eliminar el usuario (puede tener pedidos asociados)'
+      })
+    }
+  }
+
   if (cargando) return <Loading />
 
   return (
@@ -179,6 +204,10 @@ function AdminUsersPage() {
                         >
                           <span className="material-symbols-outlined">{u.activo ? 'block' : 'check_circle'}</span>
                           <span className="accion-label">{u.activo ? 'Desactivar' : 'Activar'}</span>
+                        </button>
+                        <button className="accion-btn accion-btn-danger" onClick={() => handleEliminar(u)} title="Eliminar permanentemente">
+                          <span className="material-symbols-outlined">delete</span>
+                          <span className="accion-label">Eliminar</span>
                         </button>
                       </div>
                     </td>
