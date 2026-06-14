@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Swal from 'sweetalert2'
 import { obtenerPedidos, cambiarEstadoPedido, cancelarPedido } from '../services/pedidoService'
+import { obtenerUsuario } from '../services/authService'
 import StatusBadge from '../components/StatusBadge'
 import Loading from '../components/Loading'
 
@@ -9,6 +10,9 @@ function StaffOrdersPage() {
   const [cargando, setCargando] = useState(true)
   const [busqueda, setBusqueda] = useState('')
   const [contadores, setContadores] = useState({ pendientes: 0, preparacion: 0 })
+
+  const usuario = obtenerUsuario()
+  const fotoPerfil = usuario ? localStorage.getItem(`codffee_foto_perfil_${usuario.id}`) : null
 
   const cargarPedidos = useCallback(async () => {
     try {
@@ -86,9 +90,16 @@ function StaffOrdersPage() {
   return (
     <main className="staff-orders-page">
       <header className="staff-orders-header">
-        <div>
-          <h1 className="staff-orders-title">Pedidos Activos</h1>
-          <p className="staff-orders-subtitle">Gestiona los pedidos entrantes de Codffee.</p>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {fotoPerfil ? (
+            <img src={fotoPerfil} alt="Perfil" style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover' }} />
+          ) : (
+            <span className="material-symbols-outlined" style={{ fontSize: '56px', color: 'var(--primary)' }}>account_circle</span>
+          )}
+          <div>
+            <h1 className="staff-orders-title">Pedidos Activos</h1>
+            <p className="staff-orders-subtitle">Gestiona los pedidos entrantes de Codffee.</p>
+          </div>
         </div>
         <div className="staff-orders-stats">
           <div className="staff-orders-stat">

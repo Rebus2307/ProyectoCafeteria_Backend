@@ -291,3 +291,6 @@ Es solo un aviso del IDE local. No afecta el build en Docker. Instala Java 25 en
 ## 📄 Licencia
 
 Proyecto académico.
+IPN - ESCOM 
+
+Wilfrido Cruz Merlin

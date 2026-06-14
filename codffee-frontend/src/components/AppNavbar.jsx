@@ -38,7 +38,7 @@ function AppNavbar() {
   return (
     <header className="navbar-codffee">
       <div className="navbar-codffee-inner">
-        <Link to="/" className="navbar-brand">Codffee</Link>
+        <Link to={usuario?.rol === 'ADMIN' ? '/admin' : usuario?.rol === 'PERSONAL' ? '/staff/pedidos' : '/menu'} className="navbar-brand">Codffee</Link>
         <nav className="navbar-links">
           {links.map((link) => (
             <Link

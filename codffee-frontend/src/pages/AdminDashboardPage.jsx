@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { obtenerPedidos } from '../services/pedidoService'
+import { obtenerUsuario } from '../services/authService'
 import DashboardCard from '../components/DashboardCard'
 import StatusBadge from '../components/StatusBadge'
 import Loading from '../components/Loading'
@@ -10,6 +11,9 @@ function AdminDashboardPage() {
   const navigate = useNavigate()
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
+
+  const usuario = obtenerUsuario()
+  const fotoPerfil = usuario ? localStorage.getItem(`codffee_foto_perfil_${usuario.id}`) : null
 
   useEffect(() => {
     const cargar = async () => {
@@ -45,9 +49,16 @@ function AdminDashboardPage() {
 
   return (
     <main className="admin-dashboard">
-      <div className="admin-dashboard-header">
-        <h1 className="admin-dashboard-title">Panel de Administración</h1>
-        <p className="admin-dashboard-subtitle">Bienvenido. Resumen general de Codffee.</p>
+      <div className="admin-dashboard-header" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        {fotoPerfil ? (
+          <img src={fotoPerfil} alt="Perfil" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover' }} />
+        ) : (
+          <span className="material-symbols-outlined" style={{ fontSize: '64px', color: 'var(--primary)' }}>account_circle</span>
+        )}
+        <div>
+          <h1 className="admin-dashboard-title">Panel de Administración</h1>
+          <p className="admin-dashboard-subtitle">Bienvenido{usuario ? `, ${usuario.nombre}` : ''}. Resumen general de Codffee.</p>
+        </div>
       </div>
 
       <div className="dashboard-cards">

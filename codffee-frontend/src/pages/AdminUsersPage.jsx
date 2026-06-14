@@ -79,7 +79,8 @@ function AdminUsersPage() {
     if (!nuevoRol || nuevoRol === usuario.rol) return
 
     try {
-      await actualizarUsuario(usuario.id, { ...usuario, rol: nuevoRol, contrasena: '' })
+      const { id, nombre, correo, activo } = usuario
+      await actualizarUsuario(id, { nombre, correo, rol: nuevoRol, activo, contrasena: '' })
       Swal.fire({ icon: 'success', title: 'Rol actualizado', timer: 1500, showConfirmButton: false })
       cargarUsuarios()
     } catch (error) {
@@ -100,7 +101,8 @@ function AdminUsersPage() {
     if (!result.isConfirmed) return
 
     try {
-      await actualizarUsuario(usuario.id, { ...usuario, activo: !usuario.activo, contrasena: '' })
+      const { id, nombre, correo, rol, activo } = usuario
+      await actualizarUsuario(id, { nombre, correo, rol, activo: !activo, contrasena: '' })
       Swal.fire({ icon: 'success', title: `Usuario ${action}ado`, timer: 1500, showConfirmButton: false })
       cargarUsuarios()
     } catch (error) {
