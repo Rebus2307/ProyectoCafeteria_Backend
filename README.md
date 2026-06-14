@@ -1,42 +1,64 @@
-# Codffee - Guía rápida de ejecución y pruebas
+# ☕ Codffee - Sistema de Pedidos para Cafetería
 
-Este documento explica cómo ejecutar el proyecto **Codffee** usando Docker y cómo probar sus funcionalidades principales desde **Swagger UI**.
-
----
-
-## 1. Requisitos
-
-Antes de ejecutar el proyecto, asegúrate de tener instalado:
-
-- Docker
-- Docker Compose
-- Node.js y npm, solo si también se probará el frontend React
-
-Puedes comprobar Docker con:
-
-```bash
-docker --version
-docker compose version
-```
-
-Y Node.js con:
-
-```bash
-node -v
-npm -v
-```
+**Codffee** es una aplicación web full-stack para gestionar pedidos de una cafetería universitaria. Los clientes pueden ver el menú, armar un carrito y hacer pedidos; el personal de cafetería puede gestionar el estado de los pedidos; y los administradores tienen acceso a reportes, gestión de usuarios y dashboards.
 
 ---
 
-## 2. Configurar variables de entorno del backend
+## Stack Tecnológico
 
-En la raíz del proyecto backend, donde están `Dockerfile` y `docker-compose.yml`, crea un archivo llamado:
+| Capa | Tecnología |
+|------|-----------|
+| **Frontend** | React 19, Vite 8, React Router 7, Bootstrap 5, Axios |
+| **Backend** | Java 25, Spring Boot 4.0.6, Spring Security, JPA/Hibernate |
+| **Base de datos** | MySQL 8.0 |
+| **Autenticación** | JWT (JSON Web Tokens) |
+| **Documentación API** | Swagger UI / OpenAPI 3.0 |
+| **Contenedores** | Docker + Docker Compose |
 
-```text
-.env
+---
+
+## 📁 Estructura del proyecto
+
+```
+codffee-backend/          # Backend Spring Boot
+├── Dockerfile
+├── docker-compose.yml
+├── pom.xml
+└── src/main/java/com/codffee/backend/
+    ├── config/           # CORS, DataInitializer, OpenAPI
+    ├── controller/       # REST controllers
+    ├── dto/              # Request/Response DTOs
+    ├── entity/           # JPA entities
+    ├── exception/        # Error handling
+    ├── repository/       # Data access
+    ├── security/         # JWT + Security config
+    └── service/          # Business logic
+
+codffee-frontend/         # Frontend React
+├── .env
+├── package.json
+├── vite.config.js
+└── src/
+    ├── components/       # Reusable components
+    ├── pages/            # Route pages
+    ├── routes/           # Protected routes, role guards
+    └── services/         # API clients (Axios)
 ```
 
-Agrega el siguiente contenido:
+---
+
+## 🚀 Requisitos
+
+- **Docker** + Docker Compose (para el backend)
+- **Node.js 18+** y **npm** (para el frontend, opcional si solo usas Swagger)
+
+---
+
+## ⚙️ Configuración
+
+### 1. Backend (.env)
+
+Crea `codffee-backend/.env`:
 
 ```env
 MYSQL_DATABASE=codffee_db
@@ -54,420 +76,218 @@ JWT_SECRET=Q29kZmZlZVNlY3JldEtleTIwMjZQcm95ZWN0b0NhZmV0ZXJpYVNlZ3VyYQ==
 JWT_EXPIRATION_MS=86400000
 ```
 
-Cambia `TU_CORREO@gmail.com` y `TU_PASSWORD_DE_APLICACION` por los datos reales del correo que enviará notificaciones.
+> Para el correo, usa una **contraseña de aplicación de Gmail**, no tu contraseña normal.
 
-> Si usas Gmail, necesitas una contraseña de aplicación, no la contraseña normal de tu cuenta.
+### 2. Frontend (.env)
 
----
-
-## 3. Ejecutar el backend con Docker
-
-Desde la raíz del backend ejecuta:
-
-```bash
-docker compose up --build
-```
-
-Cuando termine, deben estar activos estos contenedores:
-
-```text
-codffee-backend
-codffee-mysql
-```
-
-Puedes verificarlo con:
-
-```bash
-docker ps
-```
-
----
-
-## 4. Abrir Swagger UI
-
-Con el backend ejecutándose, abre:
-
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
-Desde Swagger se pueden probar los endpoints del backend.
-
----
-
-## 5. Cuentas iniciales
-
-El sistema crea automáticamente usuarios iniciales al arrancar.
-
-### Administrador
-
-```text
-Correo: admin@codffee.com
-Contraseña: 123456
-Rol: ADMIN
-```
-
-### Personal de cafetería
-
-```text
-Correo: personal@codffee.com
-Contraseña: 123456
-Rol: PERSONAL
-```
-
-### Cliente
-
-```text
-Correo: cliente@codffee.com
-Contraseña: 123456
-Rol: CLIENTE
-```
-
----
-
-## 6. Iniciar sesión en Swagger
-
-En Swagger busca:
-
-```http
-POST /api/auth/login
-```
-
-Ejemplo para administrador:
-
-```json
-{
-  "correo": "admin@codffee.com",
-  "contrasena": "123456"
-}
-```
-
-Ejemplo para cliente:
-
-```json
-{
-  "correo": "cliente@codffee.com",
-  "contrasena": "123456"
-}
-```
-
-La respuesta incluirá un token JWT:
-
-```json
-{
-  "mensaje": "Inicio de sesión exitoso",
-  "token": "TOKEN_JWT",
-  "tipoToken": "Bearer",
-  "id": 1,
-  "nombre": "Administrador Codffee",
-  "correo": "admin@codffee.com",
-  "rol": "ADMIN"
-}
-```
-
-Copia el valor de `token`.
-
----
-
-## 7. Autorizar Swagger con JWT
-
-En Swagger presiona el botón:
-
-```text
-Authorize
-```
-
-Pega el token con este formato:
-
-```text
-Bearer TOKEN_JWT
-```
-
-Luego presiona **Authorize** y después **Close**.
-
----
-
-## 8. Pruebas principales en Swagger
-
-### Consultar productos disponibles
-
-Endpoint:
-
-```http
-GET /api/productos/disponibles
-```
-
-Sirve para ver los productos que puede pedir un cliente.
-
----
-
-### Crear un pedido
-
-Inicia sesión como cliente y autoriza Swagger con su token.
-
-Endpoint:
-
-```http
-POST /api/pedidos
-```
-
-Ejemplo:
-
-```json
-{
-  "usuarioId": 3,
-  "metodoPago": "EFECTIVO",
-  "observaciones": "Pasaré por el pedido en el receso",
-  "productos": [
-    {
-      "productoId": 1,
-      "cantidad": 1
-    },
-    {
-      "productoId": 2,
-      "cantidad": 1
-    }
-  ]
-}
-```
-
-Al crear el pedido, el sistema guarda la orden, calcula el total, descuenta stock y envía correo de confirmación.
-
----
-
-### Consultar pedidos
-
-Endpoint:
-
-```http
-GET /api/pedidos
-```
-
-También puedes consultar detalles de un pedido:
-
-```http
-GET /api/pedidos/{pedidoId}/detalles
-```
-
----
-
-### Cambiar estado de un pedido
-
-Inicia sesión como `ADMIN` o `PERSONAL`.
-
-Endpoint:
-
-```http
-PUT /api/pedidos/{pedidoId}/estado/{estado}
-```
-
-Estados válidos:
-
-```text
-PENDIENTE
-EN_PREPARACION
-LISTO
-ENTREGADO
-CANCELADO
-```
-
-Ejemplo:
-
-```text
-pedidoId: 1
-estado: LISTO
-```
-
-Al cambiar el estado, el sistema envía un correo al usuario.
-
----
-
-### Cancelar un pedido
-
-Endpoint:
-
-```http
-PUT /api/pedidos/{pedidoId}/cancelar
-```
-
-El sistema cambia el estado a `CANCELADO`, regresa el stock de los productos y envía correo de cancelación.
-
----
-
-### Generar reporte PDF general
-
-Inicia sesión como `ADMIN`.
-
-Endpoint:
-
-```http
-GET /api/reportes/pedidos/pdf
-```
-
-El sistema descargará un archivo PDF con el reporte general de pedidos.
-
----
-
-### Generar reporte PDF filtrado
-
-Endpoint:
-
-```http
-GET /api/reportes/pedidos/pdf/filtrado
-```
-
-Parámetros:
-
-```text
-fechaInicio
-fechaFin
-estado
-```
-
-Ejemplo:
-
-```text
-fechaInicio=2026-01-01
-fechaFin=2026-12-31
-estado=ENTREGADO
-```
-
-El parámetro `estado` es opcional.
-
----
-
-## 9. Ejecutar el frontend React
-
-Entra a la carpeta del frontend:
-
-```bash
-cd codffee-frontend
-```
-
-Instala dependencias:
-
-```bash
-npm install
-```
-
-Crea un archivo `.env` en la raíz del frontend con:
+Crea `codffee-frontend/.env`:
 
 ```env
 VITE_API_URL=http://localhost:8080/api
 ```
 
-Ejecuta el frontend:
-
-```bash
-npm run dev
-```
-
-Abre la URL que indique Vite, normalmente:
-
-```text
-http://localhost:5173
-```
-
-Puedes iniciar sesión con las mismas cuentas de prueba.
-
 ---
 
-## 10. Detener el proyecto
-
-Para detener los contenedores:
+## 🐳 Ejecutar con Docker (Backend)
 
 ```bash
-docker compose down
-```
-
-Para detenerlos y borrar la base de datos del contenedor:
-
-```bash
-docker compose down -v
-```
-
----
-
-## 11. Reiniciar desde cero
-
-Si quieres borrar todo y volver a crear la base con datos iniciales:
-
-```bash
-docker compose down -v
+cd codffee-backend
 docker compose up --build
 ```
 
----
+Esto levanta:
+- **codffee-mysql** (MySQL 8.0 en puerto 3307)
+- **codffee-backend** (Spring Boot en puerto 8080)
 
-## 12. Comandos útiles
-
-Ver contenedores activos:
-
-```bash
-docker ps
-```
-
-Ver logs del backend:
-
-```bash
-docker logs -f codffee-backend
-```
-
-Ver logs de MySQL:
-
-```bash
-docker logs -f codffee-mysql
-```
-
----
-
-## 13. Problemas comunes
-
-### Error 403 Forbidden
-
-El login fue correcto, pero el usuario no tiene permiso para ese endpoint.
-
-Ejemplo: un usuario `CLIENTE` no puede consultar:
-
-```http
-GET /api/usuarios
-```
-
-Ese endpoint requiere rol `ADMIN`.
-
-### No llegan correos
-
-Revisa en `.env`:
-
-```env
-SPRING_MAIL_USERNAME=TU_CORREO@gmail.com
-SPRING_MAIL_PASSWORD=TU_PASSWORD_DE_APLICACION
-```
-
-Si usas Gmail, asegúrate de usar contraseña de aplicación.
-
-### Swagger no abre
-
-Verifica que el backend esté activo:
+Verifica con:
 
 ```bash
 docker ps
-docker logs -f codffee-backend
 ```
 
 ---
 
-## 14. Flujo recomendado para demostrar el proyecto
+## 💻 Ejecutar Frontend
 
-1. Levantar backend con Docker.
-2. Abrir Swagger UI.
-3. Iniciar sesión como cliente.
-4. Consultar productos disponibles.
-5. Crear un pedido.
-6. Verificar correo de confirmación.
-7. Iniciar sesión como personal.
-8. Cambiar estado del pedido a `LISTO`.
-9. Verificar correo de actualización.
-10. Iniciar sesión como administrador.
-11. Generar reporte PDF general o filtrado.
-12. Probar login desde el frontend React.
+```bash
+cd codffee-frontend
+npm install
+npm run dev
+```
+
+Abrir en `http://localhost:5173`
+
+---
+
+## 🔑 Cuentas de prueba
+
+El sistema crea estos usuarios automáticamente al iniciar:
+
+| Rol | Correo | Contraseña |
+|-----|--------|-----------|
+| **ADMIN** | admin@codffee.com | 123456 |
+| **ADMIN** | wilfridoadmin@gmail.com | Wilfrido23 |
+| **PERSONAL** | personal@codffee.com | 123456 |
+| **CLIENTE** | cliente@codffee.com | 123456 |
+
+---
+
+## 🧭 Funcionalidades por Rol
+
+### Cliente
+- Ver menú con categorías y buscar productos (búsqueda sin acentos ✅)
+- Seleccionar cantidad de productos con el selector +/- ✅
+- Agregar productos al carrito (el contador de stock se actualiza en tiempo real)
+- Ver y modificar carrito (cantidad, eliminar productos, observaciones)
+- Elegir método de pago (Efectivo / Tarjeta / Transferencia)
+- Confirmar pedido (descuenta stock, envía correo de confirmación)
+- Ver historial de pedidos con estado y total
+- **Perfil**: editar nombre, cambiar contraseña, subir foto de perfil (se muestra en el navbar)
+
+### Personal / Staff
+- Ver todos los pedidos entrantes con buscador
+- Cambiar estado de pedidos: PENDIENTE → EN_PREPARACION → LISTO → ENTREGADO
+- Cancelar pedidos (restaura el stock)
+
+### Administrador
+- Dashboard con estadísticas (pedidos totales, activos, ingresos)
+- Gestión de usuarios: crear, cambiar rol (CLIENTE / PERSONAL / ADMIN), activar/desactivar
+- Reportes PDF: general y filtrado por fecha/estado
+- Todo lo que puede hacer el personal
+
+---
+
+## 📡 API Endpoints
+
+### Autenticación
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| POST | `/api/auth/login` | Iniciar sesión |
+| POST | `/api/auth/register` | Registrar nuevo cliente |
+
+### Perfil
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/perfil` | Obtener perfil del usuario autenticado |
+| PUT | `/api/perfil` | Actualizar nombre y/o contraseña |
+
+### Productos
+| Método | Ruta | Acceso |
+|--------|------|--------|
+| GET | `/api/productos/disponibles` | Público |
+| GET/POST/PUT/DELETE | `/api/productos/**` | ADMIN / PERSONAL |
+
+### Categorías
+| Método | Ruta | Acceso |
+|--------|------|--------|
+| GET | `/api/categorias/activas` | Público |
+| GET/POST/PUT/DELETE | `/api/categorias/**` | ADMIN / PERSONAL |
+
+### Pedidos
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/pedidos` | Listar todos |
+| GET | `/api/pedidos/{id}` | Buscar por ID |
+| GET | `/api/pedidos/usuario/{id}` | Pedidos de un usuario |
+| POST | `/api/pedidos` | Crear pedido |
+| PUT | `/api/pedidos/{id}/estado/{estado}` | Cambiar estado |
+| PUT | `/api/pedidos/{id}/cancelar` | Cancelar pedido |
+
+### Usuarios (solo ADMIN)
+| Método | Ruta |
+|--------|------|
+| GET/POST | `/api/usuarios` |
+| GET/PUT/DELETE | `/api/usuarios/{id}` |
+
+### Reportes (solo ADMIN)
+| Método | Ruta |
+|--------|------|
+| GET | `/api/reportes/pedidos/pdf` |
+| GET | `/api/reportes/pedidos/pdf/filtrado` |
+
+---
+
+## 📖 Swagger UI
+
+Con el backend corriendo, abre:
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+1. Haz login en `POST /api/auth/login`
+2. Copia el token JWT
+3. Presiona **Authorize** y pega `Bearer TU_TOKEN`
+4. Prueba los endpoints protegidos
+
+---
+
+## 🧪 Probar el flujo completo
+
+### Desde el Frontend (recomendado)
+
+1. Abre `http://localhost:5173`
+2. Regístrate como cliente o usa `cliente@codffee.com / 123456`
+3. Navega por el menú, selecciona cantidad y agrega productos al carrito
+4. Ve al carrito y confirma el pedido
+5. Inicia sesión como `personal@codffee.com / 123456` en otra pestaña
+6. Ve a Pedidos, cambia el estado a EN_PREPARACION → LISTO
+7. Inicia sesión como `admin@codffee.com / 123456`
+8. Ve al Dashboard, Usuarios, Reportes
+
+### Desde Swagger
+
+1. Login como cliente → `POST /api/auth/login`
+2. Autorizar Swagger con el token
+3. `GET /api/productos/disponibles`
+4. `POST /api/pedidos` (usar `usuarioId` del paso 1)
+5. Login como personal → cambiar estado del pedido
+6. Login como admin → `/api/usuarios`, `/api/reportes/pedidos/pdf`
+
+---
+
+## 🛠️ Comandos útiles
+
+```bash
+# Reconstruir backend
+docker compose up --build -d
+
+# Ver logs
+docker logs -f codffee-backend
+
+# Detener todo
+docker compose down
+
+# Detener y borrar BD
+docker compose down -v
+
+# Reconstruir desde cero
+docker compose down -v && docker compose up --build
+```
+
+---
+
+## ❗ Problemas comunes
+
+### CORS: No se pueden hacer peticiones desde el frontend
+Asegúrate de reconstruir el backend después de cualquier cambio:
+```bash
+docker compose down && docker compose up --build -d
+```
+
+### Error "No se pudo crear el pedido"
+1. Verifica que el backend esté corriendo (`docker ps`)
+2. Revisa la consola del navegador (F12) para errores CORS
+3. Confirma que el producto tenga stock disponible
+
+### No llegan correos de notificación
+Revisa las credenciales SMTP en `.env`. Gmail requiere una **contraseña de aplicación**.
+
+### Error "release 25 is not found" en VS Code
+Es solo un aviso del IDE local. No afecta el build en Docker. Instala Java 25 en tu máquina si quieres eliminarlo (https://adoptium.net/tem/releases/?version=25).
+
+---
+
+## 📄 Licencia
+
+Proyecto académico.
