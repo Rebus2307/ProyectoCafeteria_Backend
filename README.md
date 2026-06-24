@@ -10,7 +10,7 @@
 |------|-----------|
 | **Frontend** | React 19, Vite 8, React Router 7, Bootstrap 5, Axios |
 | **Backend** | Java 25, Spring Boot 4.0.6, Spring Security, JPA/Hibernate |
-| **Base de datos** | MySQL 8.0 |
+| **Base de datos** | YugabyteDB (PostgreSQL) |
 | **Autenticación** | JWT (JSON Web Tokens) |
 | **Documentación API** | Swagger UI / OpenAPI 3.0 |
 | **Contenedores** | Docker + Docker Compose |
@@ -61,11 +61,12 @@ codffee-frontend/         # Frontend React
 Crea `codffee-backend/.env`:
 
 ```env
-MYSQL_DATABASE=codffee_db
-MYSQL_ROOT_PASSWORD=root
+DB_NAME=codffee_db
+DB_PASSWORD=yugabyte
 
-SPRING_DATASOURCE_USERNAME=root
-SPRING_DATASOURCE_PASSWORD=root
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/codffee_db
+SPRING_DATASOURCE_USERNAME=yugabyte
+SPRING_DATASOURCE_PASSWORD=yugabyte
 
 SPRING_MAIL_HOST=smtp.gmail.com
 SPRING_MAIL_PORT=587
@@ -74,6 +75,8 @@ SPRING_MAIL_PASSWORD=TU_PASSWORD_DE_APLICACION
 
 JWT_SECRET=Q29kZmZlZVNlY3JldEtleTIwMjZQcm95ZWN0b0NhZmV0ZXJpYVNlZ3VyYQ==
 JWT_EXPIRATION_MS=86400000
+
+FRONTEND_URL=http://localhost:5173
 ```
 
 > Para el correo, usa una **contraseña de aplicación de Gmail**, no tu contraseña normal.
@@ -125,10 +128,8 @@ El sistema crea estos usuarios automáticamente al iniciar:
 
 | Rol | Correo | Contraseña |
 |-----|--------|-----------|
-| **ADMIN** | admin@codffee.com | 123456 |
-| **ADMIN** | wilfridoadmin@gmail.com | Wilfrido23 |
-| **PERSONAL** | personal@codffee.com | 123456 |
-| **CLIENTE** | cliente@codffee.com | 123456 |
+| **ADMIN** | `codffee.notificaciones.api@gmail.com` | `Admin123` |
+| **PERSONAL** | `willy2019031000merlin@gmail.com` | `Wilfrido23` |
 
 ---
 
@@ -226,13 +227,13 @@ http://localhost:8080/swagger-ui/index.html
 
 ### Desde el Frontend (recomendado)
 
-1. Abre `http://localhost:5173`
-2. Regístrate como cliente o usa `cliente@codffee.com / 123456`
+1. Abre `http://localhost:5173` o tu URL de Netlify
+2. Regístrate como cliente creando una cuenta nueva
 3. Navega por el menú, selecciona cantidad y agrega productos al carrito
 4. Ve al carrito y confirma el pedido
-5. Inicia sesión como `personal@codffee.com / 123456` en otra pestaña
+5. Inicia sesión como `willy2019031000merlin@gmail.com / Wilfrido23` (Personal) en otra pestaña
 6. Ve a Pedidos, cambia el estado a EN_PREPARACION → LISTO
-7. Inicia sesión como `admin@codffee.com / 123456`
+7. Inicia sesión como `codffee.notificaciones.api@gmail.com / Admin123` (Admin)
 8. Ve al Dashboard, Usuarios, Reportes
 
 ### Desde Swagger
