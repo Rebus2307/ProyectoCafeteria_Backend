@@ -36,9 +36,11 @@ function AppNavbar() {
   const isActive = (path) => location.pathname === path
 
   return (
-    <header className="navbar-codffee">
-      <div className="navbar-codffee-inner">
-        <Link to={usuario?.rol === 'ADMIN' ? '/admin' : usuario?.rol === 'PERSONAL' ? '/staff/pedidos' : '/menu'} className="navbar-brand">Codffee</Link>
+    <header className="navbar">
+      <div className="navbar-inner">
+        <Link to={usuario?.rol === 'ADMIN' ? '/admin' : usuario?.rol === 'PERSONAL' ? '/staff/pedidos' : '/menu'} className="navbar-brand">
+          <span className="brand-emoji">☕</span> Codffee
+        </Link>
         <nav className="navbar-links">
           {links.map((link) => (
             <Link
@@ -46,24 +48,24 @@ function AppNavbar() {
               to={link.path}
               className={`navbar-link ${isActive(link.path) ? 'navbar-link-active' : ''}`}
             >
-              <span className="material-symbols-outlined navbar-link-icon">{link.icon}</span>
-              {link.label}
+              <span className="material-symbols-outlined">{link.icon}</span>
+              <span>{link.label}</span>
             </Link>
           ))}
         </nav>
         <div className="navbar-user">
-          <Link to="/perfil" className="navbar-user-avatar-link" title="Mi perfil" style={{ borderRadius: '50%', overflow: 'hidden' }}>
+          <Link to="/perfil" className="navbar-user-avatar" title="Mi perfil">
             {fotoPerfil ? (
-              <img src={fotoPerfil} alt="Foto" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+              <img src={fotoPerfil} alt="Foto" />
             ) : (
-              <span className="material-symbols-outlined navbar-user-avatar-icon">account_circle</span>
+              <span className="material-symbols-outlined">account_circle</span>
             )}
           </Link>
           <div className="navbar-user-info">
             <span className="navbar-user-name">{usuario?.nombre}</span>
             <span className="navbar-user-role">{usuario?.rol}</span>
           </div>
-          <button className="navbar-user-btn" onClick={handleLogout} title="Cerrar sesión">
+          <button className="navbar-btn" onClick={handleLogout} title="Cerrar sesión">
             <span className="material-symbols-outlined">logout</span>
           </button>
         </div>

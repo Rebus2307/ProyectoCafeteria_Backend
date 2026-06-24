@@ -3,8 +3,8 @@ import { obtenerUsuario, logout } from '../services/authService'
 
 const navItems = [
   { path: '/admin', label: 'Dashboard', icon: 'dashboard', roles: ['ADMIN'] },
-  { path: '/staff/pedidos', label: 'Order Queue', icon: 'assignment', roles: ['ADMIN', 'PERSONAL'] },
-  { path: '/admin/reportes', label: 'Reports', icon: 'analytics', roles: ['ADMIN'] },
+  { path: '/staff/pedidos', label: 'Pedidos', icon: 'assignment', roles: ['ADMIN', 'PERSONAL'] },
+  { path: '/admin/reportes', label: 'Reportes', icon: 'analytics', roles: ['ADMIN'] },
   { path: '/admin/usuarios', label: 'Usuarios', icon: 'group', roles: ['ADMIN'] },
   { path: '/perfil', label: 'Mi Perfil', icon: 'account_circle', roles: ['ADMIN', 'PERSONAL'] },
 ]
@@ -29,41 +29,40 @@ function StaffSidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <header className="navbar-codffee d-md-none">
-        <div className="navbar-codffee-inner">
-          <span className="navbar-brand">Codffee</span>
+      <header className="navbar d-md-none">
+        <div className="navbar-inner">
+          <span className="navbar-brand"><span className="brand-emoji">☕</span> Codffee</span>
           <div className="navbar-user">
             {fotoPerfil ? (
                <img src={fotoPerfil} alt="Foto" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover', marginRight: 8 }} />
              ) : (
-               <span className="material-symbols-outlined me-2" style={{ color: 'var(--primary)', fontSize: 24 }}>account_circle</span>
-             )}
-             <span className="navbar-user-name me-2">{usuario?.nombre}</span>
-             <button className="navbar-user-btn" onClick={handleLogout}>
-               <span className="material-symbols-outlined">logout</span>
-             </button>
+               <span className="material-symbols-outlined" style={{ color: 'var(--accent)', fontSize: 24 }}>account_circle</span>
+            )}
+            <span className="navbar-user-name" style={{ marginRight: 8 }}>{usuario?.nombre}</span>
+            <button className="navbar-btn" onClick={handleLogout}>
+              <span className="material-symbols-outlined">logout</span>
+            </button>
           </div>
         </div>
       </header>
 
       {/* Sidebar - desktop */}
-      <nav className="staff-sidebar">
-        <div className="staff-sidebar-header">
-          <div className="staff-sidebar-avatar">
-            <span className="material-symbols-outlined">person</span>
-          </div>
-          <div>
-            <h2 className="staff-sidebar-title">Staff Portal</h2>
-            <p className="staff-sidebar-subtitle">Cafeteria Management</p>
+      <nav className="sidebar">
+        <div className="sidebar-brand">
+          <div className="sidebar-brand-icon">☕</div>
+          <div className="sidebar-brand-text">
+            <h2>Codffee</h2>
+            <p>Panel de gestión</p>
           </div>
         </div>
 
-        <div className="staff-sidebar-nav">
+        <div className="sidebar-section-title">Navegación</div>
+        <div className="sidebar-nav">
           {visibleItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`staff-sidebar-link ${isActive(item.path) ? 'staff-sidebar-link-active' : ''}`}
+              className={`sidebar-link ${isActive(item.path) ? 'sidebar-link-active' : ''}`}
             >
               <span className="material-symbols-outlined">{item.icon}</span>
               {item.label}
@@ -71,25 +70,24 @@ function StaffSidebar() {
           ))}
         </div>
 
-        <div className="staff-sidebar-footer">
-          <div className="staff-sidebar-user" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div className="staff-sidebar-avatar staff-sidebar-avatar-sm" style={{ overflow: 'hidden' }}>
-                {fotoPerfil ? (
-                  <img src={fotoPerfil} alt="Foto de perfil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <span className="material-symbols-outlined">person</span>
-                )}
-              </div>
-              <div>
-                <p className="staff-sidebar-user-name">{usuario?.nombre}</p>
-                <p className="staff-sidebar-user-role">{usuario?.rol}</p>
-              </div>
+        <div className="sidebar-footer">
+          <div className="sidebar-user">
+            <div className="sidebar-user-avatar">
+              {fotoPerfil ? (
+                <img src={fotoPerfil} alt="Foto de perfil" />
+              ) : (
+                <span className="material-symbols-outlined">person</span>
+              )}
             </div>
-            <button className="navbar-user-btn" onClick={handleLogout} title="Cerrar sesión">
-              <span className="material-symbols-outlined">logout</span>
-            </button>
+            <div>
+              <div className="sidebar-user-name">{usuario?.nombre}</div>
+              <div className="sidebar-user-role">{usuario?.rol}</div>
+            </div>
           </div>
+          <button className="sidebar-link" style={{ marginTop: 4 }} onClick={handleLogout}>
+            <span className="material-symbols-outlined">logout</span>
+            Cerrar sesión
+          </button>
         </div>
       </nav>
     </>

@@ -5,6 +5,8 @@ import { obtenerUsuario } from '../services/authService'
 import StatusBadge from '../components/StatusBadge'
 import Loading from '../components/Loading'
 
+const swalDark = { background: '#221e1a', color: '#f5efe8' }
+
 function StaffOrdersPage() {
   const [pedidos, setPedidos] = useState([])
   const [cargando, setCargando] = useState(true)
@@ -24,65 +26,51 @@ function StaffOrdersPage() {
         preparacion: data.filter((p) => p.estado === 'EN_PREPARACION').length,
       })
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los pedidos' })
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los pedidos', ...swalDark })
     } finally {
       setCargando(false)
     }
   }, [])
 
-  useEffect(() => {
-    cargarPedidos()
-  }, [cargarPedidos])
+  useEffect(() => { cargarPedidos() }, [cargarPedidos])
 
   const handleCambiarEstado = async (pedidoId, estado) => {
     const labels = { EN_PREPARACION: 'En preparación', LISTO: 'Listo', ENTREGADO: 'Entregado' }
     const result = await Swal.fire({
-      title: '¿Cambiar estado?',
-      text: `Marcar como "${labels[estado] || estado}"`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, cambiar',
-      cancelButtonText: 'Cancelar',
+      title: '¿Cambiar estado?', text: `Marcar como "${labels[estado] || estado}"`,
+      icon: 'question', showCancelButton: true,
+      confirmButtonText: 'Sí, cambiar', cancelButtonText: 'Cancelar', ...swalDark,
     })
     if (!result.isConfirmed) return
-
     try {
       await cambiarEstadoPedido(pedidoId, estado)
-      Swal.fire({ icon: 'success', title: 'Estado actualizado', timer: 1000, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Estado actualizado', timer: 1000, showConfirmButton: false, ...swalDark })
       cargarPedidos()
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cambiar el estado' })
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cambiar el estado', ...swalDark })
     }
   }
 
   const handleCancelar = async (pedidoId) => {
     const result = await Swal.fire({
-      title: '¿Cancelar pedido?',
-      text: 'Esta acción no se puede deshacer',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#ba1a1a',
-      confirmButtonText: 'Sí, cancelar',
-      cancelButtonText: 'No',
+      title: '¿Cancelar pedido?', text: 'Esta acción no se puede deshacer',
+      icon: 'warning', showCancelButton: true,
+      confirmButtonColor: '#e85d5d', confirmButtonText: 'Sí, cancelar', cancelButtonText: 'No', ...swalDark,
     })
     if (!result.isConfirmed) return
-
     try {
       await cancelarPedido(pedidoId)
-      Swal.fire({ icon: 'success', title: 'Pedido cancelado', timer: 1000, showConfirmButton: false })
+      Swal.fire({ icon: 'success', title: 'Pedido cancelado', timer: 1000, showConfirmButton: false, ...swalDark })
       cargarPedidos()
     } catch {
-      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cancelar el pedido' })
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cancelar el pedido', ...swalDark })
     }
   }
 
   const pedidosFiltrados = pedidos.filter((p) => {
     if (!busqueda) return true
     const q = busqueda.toLowerCase()
-    return (
-      String(p.id).includes(q) ||
-      (p.usuario?.nombre || '').toLowerCase().includes(q)
-    )
+    return String(p.id).includes(q) || (p.usuario?.nombre || '').toLowerCase().includes(q)
   })
 
   if (cargando) return <Loading />
@@ -92,9 +80,9 @@ function StaffOrdersPage() {
       <header className="staff-orders-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {fotoPerfil ? (
-            <img src={fotoPerfil} alt="Perfil" style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover' }} />
+            <img src={fotoPerfil} alt="Perfil" style={{ width: '52px', height: '52px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border)' }} />
           ) : (
-            <span className="material-symbols-outlined" style={{ fontSize: '56px', color: 'var(--primary)' }}>account_circle</span>
+            <span className="material-symbols-outlined" style={{ fontSize: '52px', color: 'var(--accent)' }}>account_circle</span>
           )}
           <div>
             <h1 className="staff-orders-title">Pedidos Activos</h1>
@@ -102,24 +90,24 @@ function StaffOrdersPage() {
           </div>
         </div>
         <div className="staff-orders-stats">
-          <div className="staff-orders-stat">
+          <div className="stat-chip">
             <span className="material-symbols-outlined">pending_actions</span>
             <div>
-              <p className="staff-orders-stat-label">Pendientes</p>
-              <p className="staff-orders-stat-value">{contadores.pendientes}</p>
+              <p className="stat-chip-label">Pendientes</p>
+              <p className="stat-chip-value">{contadores.pendientes}</p>
             </div>
           </div>
-          <div className="staff-orders-stat">
+          <div className="stat-chip">
             <span className="material-symbols-outlined">local_fire_department</span>
             <div>
-              <p className="staff-orders-stat-label">Preparando</p>
-              <p className="staff-orders-stat-value">{contadores.preparacion}</p>
+              <p className="stat-chip-label">Preparando</p>
+              <p className="stat-chip-value">{contadores.preparacion}</p>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="staff-orders-table-container">
+      <div className="staff-orders-table-wrap">
         <div className="staff-orders-toolbar">
           <div className="staff-orders-search">
             <span className="material-symbols-outlined">search</span>
@@ -130,13 +118,13 @@ function StaffOrdersPage() {
               onChange={(e) => setBusqueda(e.target.value)}
             />
           </div>
-          <button className="staff-orders-refresh" onClick={cargarPedidos}>
+          <button className="btn btn-ghost" onClick={cargarPedidos}>
             <span className="material-symbols-outlined">refresh</span>
             Refrescar
           </button>
         </div>
 
-        <div className="overflow-x-auto">
+        <div style={{ overflowX: 'auto' }}>
           <table className="staff-orders-table">
             <thead>
               <tr>
@@ -145,15 +133,15 @@ function StaffOrdersPage() {
                 <th>Hora</th>
                 <th>Estado</th>
                 <th>Total</th>
-                <th className="text-center">Acciones</th>
+                <th style={{ textAlign: 'center' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {pedidosFiltrados.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center py-lg">
+                  <td colSpan="6" style={{ textAlign: 'center', padding: 40 }}>
                     <div className="empty-state">
-                      <span className="material-symbols-outlined empty-state-icon">search_off</span>
+                      <span className="material-symbols-outlined">search_off</span>
                       <p>No hay pedidos que coincidan</p>
                     </div>
                   </td>
@@ -162,11 +150,7 @@ function StaffOrdersPage() {
                 pedidosFiltrados.map((pedido) => (
                   <tr key={pedido.id}>
                     <td className="staff-order-id">#{pedido.id}</td>
-                    <td>
-                      <div className="staff-order-cliente">
-                        {pedido.usuario?.nombre || pedido.cliente || '—'}
-                      </div>
-                    </td>
+                    <td><div className="staff-order-cliente">{pedido.usuario?.nombre || pedido.cliente || '—'}</div></td>
                     <td className="staff-order-fecha">
                       {pedido.fechaHora || pedido.fecha ? new Date(pedido.fechaHora || pedido.fecha).toLocaleTimeString('es-MX', {
                         hour: '2-digit', minute: '2-digit'
@@ -179,25 +163,25 @@ function StaffOrdersPage() {
                         {pedido.estado === 'PENDIENTE' && (
                           <button className="accion-btn" onClick={() => handleCambiarEstado(pedido.id, 'EN_PREPARACION')} title="En preparación">
                             <span className="material-symbols-outlined">local_cafe</span>
-                            <span className="accion-label">Prep</span>
+                            <span>Prep</span>
                           </button>
                         )}
                         {pedido.estado === 'EN_PREPARACION' && (
                           <button className="accion-btn" onClick={() => handleCambiarEstado(pedido.id, 'LISTO')} title="Listo">
                             <span className="material-symbols-outlined">check_circle</span>
-                            <span className="accion-label">Listo</span>
+                            <span>Listo</span>
                           </button>
                         )}
                         {pedido.estado === 'LISTO' && (
                           <button className="accion-btn" onClick={() => handleCambiarEstado(pedido.id, 'ENTREGADO')} title="Entregado">
                             <span className="material-symbols-outlined">done_all</span>
-                            <span className="accion-label">Entregar</span>
+                            <span>Entregar</span>
                           </button>
                         )}
                         {!['ENTREGADO', 'CANCELADO'].includes(pedido.estado) && (
                           <button className="accion-btn accion-btn-danger" onClick={() => handleCancelar(pedido.id)} title="Cancelar">
                             <span className="material-symbols-outlined">cancel</span>
-                            <span className="accion-label">Cancelar</span>
+                            <span>Cancelar</span>
                           </button>
                         )}
                       </div>

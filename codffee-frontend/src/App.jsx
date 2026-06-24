@@ -1,4 +1,7 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { obtenerUsuario } from './services/authService'
+import AppNavbar from './components/AppNavbar'
+import StaffSidebar from './components/StaffSidebar'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import MenuPage from './pages/MenuPage'
@@ -9,27 +12,34 @@ import AdminDashboardPage from './pages/AdminDashboardPage'
 import AdminUsersPage from './pages/AdminUsersPage'
 import ReportsPage from './pages/ReportsPage'
 import ProfilePage from './pages/ProfilePage'
-import ProtectedRoute from './routes/ProtectedRoute'
-import RoleRoute from './routes/RoleRoute'
-import AppNavbar from './components/AppNavbar'
-import StaffSidebar from './components/StaffSidebar'
-import { Outlet } from 'react-router-dom'
-import { obtenerUsuario } from './services/authService'
 
-function HomeRedirect() {
+function ProtectedRoute() {
   const usuario = obtenerUsuario()
   if (!usuario) return <Navigate to="/login" replace />
-  const routes = { CLIENTE: '/menu', PERSONAL: '/staff/pedidos', ADMIN: '/admin' }
-  return <Navigate to={routes[usuario.rol] || '/menu'} replace />
+  return <Outlet />
+}
+
+function RoleRoute({ roles }) {
+  const usuario = obtenerUsuario()
+  if (!usuario) return <Navigate to="/login" replace />
+  if (!roles.includes(usuario.rol)) return <Navigate to="/menu" replace />
+  return <Outlet />
+}
+
+function PublicRoute() {
+  const usuario = obtenerUsuario()
+  if (usuario) {
+    const routes = { CLIENTE: '/menu', PERSONAL: '/staff/pedidos', ADMIN: '/admin' }
+    return <Navigate to={routes[usuario.rol] || '/menu'} replace />
+  }
+  return <Outlet />
 }
 
 function ClientLayout() {
   return (
     <>
       <AppNavbar />
-      <main className="main-content">
-        <Outlet />
-      </main>
+      <Outlet />
     </>
   )
 }
@@ -38,9 +48,9 @@ function StaffLayout() {
   return (
     <div className="staff-layout">
       <StaffSidebar />
-      <main className="main-content">
+      <div className="staff-main">
         <Outlet />
-      </main>
+      </div>
     </div>
   )
 }
@@ -49,43 +59,41 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/registro" element={<RegisterPage />} />
-        <Route path="/" element={<HomeRedirect />} />
+        {/* Rutas públicas */}
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/registro" element={<RegisterPage />} />
+        </Route>
 
+        {/* Rutas de cliente */}
         <Route element={<ProtectedRoute />}>
-          {/* Perfil - cualquier rol autenticado */}
-          <Route path="/perfil" element={<ClientLayout />}>
-            <Route index element={<ProfilePage />} />
-          </Route>
-
-          {/* CLIENTE routes */}
-          <Route element={<RoleRoute roles={['CLIENTE']} />}>
-            <Route element={<ClientLayout />}>
-              <Route path="/menu" element={<MenuPage />} />
-              <Route path="/carrito" element={<CartPage />} />
-              <Route path="/mis-pedidos" element={<OrdersPage />} />
-            </Route>
-          </Route>
-
-          {/* PERSONAL + ADMIN routes (staff sidebar) */}
-          <Route element={<RoleRoute roles={['PERSONAL', 'ADMIN']} />}>
-            <Route element={<StaffLayout />}>
-              <Route path="/staff/pedidos" element={<StaffOrdersPage />} />
-            </Route>
-          </Route>
-
-          {/* ADMIN only routes */}
-          <Route element={<RoleRoute roles={['ADMIN']} />}>
-            <Route element={<StaffLayout />}>
-              <Route path="/admin" element={<AdminDashboardPage />} />
-              <Route path="/admin/reportes" element={<ReportsPage />} />
-              <Route path="/admin/usuarios" element={<AdminUsersPage />} />
-            </Route>
+          <Route element={<ClientLayout />}>
+            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/carrito" element={<CartPage />} />
+            <Route path="/mis-pedidos" element={<OrdersPage />} />
+            <Route path="/perfil" element={<ProfilePage />} />
           </Route>
         </Route>
 
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        {/* Rutas de personal */}
+        <Route element={<RoleRoute roles={['PERSONAL', 'ADMIN']} />}>
+          <Route element={<StaffLayout />}>
+            <Route path="/staff/pedidos" element={<StaffOrdersPage />} />
+          </Route>
+        </Route>
+
+        {/* Rutas de admin */}
+        <Route element={<RoleRoute roles={['ADMIN']} />}>
+          <Route element={<StaffLayout />}>
+            <Route path="/admin" element={<AdminDashboardPage />} />
+            <Route path="/admin/usuarios" element={<AdminUsersPage />} />
+            <Route path="/admin/reportes" element={<ReportsPage />} />
+          </Route>
+        </Route>
+
+        {/* Default redirect */}
+        <Route path="/" element={<Navigate to="/menu" replace />} />
+        <Route path="*" element={<Navigate to="/menu" replace />} />
       </Routes>
     </BrowserRouter>
   )

@@ -10,8 +10,8 @@ function StatusBadge({ estado }) {
   const config = statusConfig[estado] || { class: '', icon: 'help', label: estado }
 
   return (
-    <span className={`status-badge ${config.class}`}>
-      <span className="material-symbols-outlined status-badge-icon">{config.icon}</span>
+    <span className={`badge ${config.class}`}>
+      <span className="material-symbols-outlined">{config.icon}</span>
       {config.label}
     </span>
   )

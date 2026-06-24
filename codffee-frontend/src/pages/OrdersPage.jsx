@@ -35,24 +35,24 @@ function OrdersPage() {
 
       {error ? (
         <div className="empty-state">
-          <span className="material-symbols-outlined empty-state-icon">error</span>
+          <span className="material-symbols-outlined">error</span>
           <p>{error}</p>
         </div>
       ) : pedidos.length === 0 ? (
         <div className="empty-state">
-          <span className="material-symbols-outlined empty-state-icon">receipt_long</span>
-          <p className="font-body-md">No hay pedidos registrados</p>
+          <span className="material-symbols-outlined">receipt_long</span>
+          <p>Aún no tienes pedidos</p>
         </div>
       ) : (
         <div className="orders-list">
           {pedidos.map((pedido) => (
-            <div key={pedido.id} className={`order-card ${pedido.estado === 'CANCELADO' ? 'order-card-cancelled' : ''} ${pedido.estado === 'ENTREGADO' ? 'order-card-delivered' : ''}`}>
+            <div key={pedido.id} className={`order-card ${pedido.estado === 'CANCELADO' ? 'order-card-cancelled' : ''}`}>
               <div className="order-card-top">
                 <div className="order-card-info">
                   <h3 className="order-card-id">Pedido #{pedido.id}</h3>
                   <StatusBadge estado={pedido.estado} />
                 </div>
-                <span className="order-card-fecha">
+                <span className="order-card-date">
                   {pedido.fechaHora || pedido.fecha ? new Date(pedido.fechaHora || pedido.fecha).toLocaleString('es-MX', {
                     year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                   }) : '—'}

@@ -7,6 +7,8 @@ import DashboardCard from '../components/DashboardCard'
 import StatusBadge from '../components/StatusBadge'
 import Loading from '../components/Loading'
 
+const swalDark = { background: '#221e1a', color: '#f5efe8' }
+
 function AdminDashboardPage() {
   const navigate = useNavigate()
   const [pedidos, setPedidos] = useState([])
@@ -21,7 +23,7 @@ function AdminDashboardPage() {
         const res = await obtenerPedidos()
         setPedidos(Array.isArray(res.data) ? res.data : [])
       } catch {
-        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los datos' })
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los datos', ...swalDark })
       } finally {
         setCargando(false)
       }
@@ -51,52 +53,30 @@ function AdminDashboardPage() {
     <main className="admin-dashboard">
       <div className="admin-dashboard-header" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {fotoPerfil ? (
-          <img src={fotoPerfil} alt="Perfil" style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover' }} />
+          <img src={fotoPerfil} alt="Perfil" style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border)' }} />
         ) : (
-          <span className="material-symbols-outlined" style={{ fontSize: '64px', color: 'var(--primary)' }}>account_circle</span>
+          <span className="material-symbols-outlined" style={{ fontSize: '56px', color: 'var(--accent)' }}>account_circle</span>
         )}
         <div>
           <h1 className="admin-dashboard-title">Panel de Administración</h1>
-          <p className="admin-dashboard-subtitle">Bienvenido{usuario ? `, ${usuario.nombre}` : ''}. Resumen general de Codffee.</p>
+          <p className="admin-dashboard-subtitle">Bienvenido{usuario ? `, ${usuario.nombre}` : ''}. Resumen general de Codffee ☕</p>
         </div>
       </div>
 
       <div className="dashboard-cards">
         <DashboardCard
-          icon="receipt_long"
-          label="Pedidos Totales"
-          value={stats.total}
+          icon="receipt_long" label="Pedidos Totales" value={stats.total}
           sublabel={`+${stats.pendientes + stats.preparacion} activos`}
           onClick={() => navigate('/staff/pedidos')}
         />
-        <DashboardCard
-          icon="schedule"
-          label="Pendientes"
-          value={stats.pendientes}
-          colorClass="dashboard-card-warning"
-        />
-        <DashboardCard
-          icon="local_fire_department"
-          label="En preparación"
-          value={stats.preparacion}
-          colorClass="dashboard-card-info"
-        />
-        <DashboardCard
-          icon="done_all"
-          label="Entregados"
-          value={stats.entregados}
-          colorClass="dashboard-card-success"
-        />
-        <DashboardCard
-          icon="monetization_on"
-          label="Total Vendido"
-          value={`$${stats.totalVendido.toFixed(2)}`}
-          colorClass="dashboard-card-primary"
-        />
+        <DashboardCard icon="schedule" label="Pendientes" value={stats.pendientes} colorClass="dash-card-warning" />
+        <DashboardCard icon="local_fire_department" label="En preparación" value={stats.preparacion} colorClass="dash-card-info" />
+        <DashboardCard icon="done_all" label="Entregados" value={stats.entregados} colorClass="dash-card-success" />
+        <DashboardCard icon="monetization_on" label="Total Vendido" value={`$${stats.totalVendido.toFixed(2)}`} colorClass="dash-card-accent" />
       </div>
 
       <div className="admin-dashboard-bottom">
-        <div className="admin-recent-orders">
+        <div className="admin-recent">
           <div className="admin-recent-header">
             <h2>Pedidos Recientes</h2>
             <button className="btn-link" onClick={() => navigate('/staff/pedidos')}>Ver todos</button>
@@ -108,7 +88,7 @@ function AdminDashboardPage() {
                   <div className="admin-recent-id">#{p.id}</div>
                   <div>
                     <p className="admin-recent-name">{p.usuario?.nombre || '—'}</p>
-                      <p className="admin-recent-time">
+                    <p className="admin-recent-time">
                       {p.fechaHora || p.fecha ? new Date(p.fechaHora || p.fecha).toLocaleString('es-MX', {
                         hour: '2-digit', minute: '2-digit'
                       }) : '—'}
@@ -142,8 +122,8 @@ function AdminDashboardPage() {
               </button>
             </div>
           </div>
-          <div className="admin-system-health">
-            <span className="material-symbols-outlined admin-health-icon">check_circle</span>
+          <div className="admin-health">
+            <span className="material-symbols-outlined">check_circle</span>
             <div>
               <h4>Sistema saludable</h4>
               <p>Todos los servicios están operativos.</p>

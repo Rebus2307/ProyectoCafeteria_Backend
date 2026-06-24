@@ -7,18 +7,13 @@ import ProductCard from '../components/ProductCard'
 import Loading from '../components/Loading'
 
 const CART_KEY = 'codffee_carrito'
+const swalDark = { background: '#221e1a', color: '#f5efe8' }
 
 const getCart = () => {
-  try {
-    return JSON.parse(localStorage.getItem(CART_KEY)) || []
-  } catch {
-    return []
-  }
+  try { return JSON.parse(localStorage.getItem(CART_KEY)) || [] }
+  catch { return [] }
 }
-
-const saveCart = (cart) => {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart))
-}
+const saveCart = (cart) => { localStorage.setItem(CART_KEY, JSON.stringify(cart)) }
 
 function MenuPage() {
   const navigate = useNavigate()
@@ -39,11 +34,7 @@ function MenuPage() {
         setProductos(prodRes.data || [])
         setCategorias(catRes.data || [])
       } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se pudieron cargar los productos',
-        })
+        Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los productos', ...swalDark })
       } finally {
         setCargando(false)
       }
@@ -65,41 +56,23 @@ function MenuPage() {
   const agregarAlCarrito = (producto, cantidad = 1) => {
     const stockDisp = getStockDisponible(producto)
     if (stockDisp === 0) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Stock insuficiente',
-        text: `No hay más unidades disponibles de ${producto.nombre}`,
-      })
+      Swal.fire({ icon: 'warning', title: 'Stock insuficiente', text: `No hay más unidades de ${producto.nombre}`, ...swalDark })
       return
     }
-
     if (cantidad > stockDisp) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Stock insuficiente',
-        text: `Solo hay ${stockDisp} unidades disponibles de ${producto.nombre}`,
-      })
+      Swal.fire({ icon: 'warning', title: 'Stock insuficiente', text: `Solo hay ${stockDisp} unidades de ${producto.nombre}`, ...swalDark })
       return
     }
-
     const cart = getCart()
     const existente = cart.find((item) => item.producto.id === producto.id)
-
     if (existente) {
       existente.cantidad += cantidad
     } else {
       cart.push({ producto, cantidad })
     }
-
     saveCart(cart)
     setCartVersion((v) => v + 1)
-    Swal.fire({
-      icon: 'success',
-      title: 'Agregado',
-      text: `${producto.nombre} agregado al carrito`,
-      timer: 1000,
-      showConfirmButton: false,
-    })
+    Swal.fire({ icon: 'success', title: '¡Agregado!', text: `${producto.nombre} al carrito`, timer: 1000, showConfirmButton: false, ...swalDark })
   }
 
   const productosFiltrados = productos.filter((p) => {
@@ -128,7 +101,7 @@ function MenuPage() {
             <h2 className="menu-sidebar-title">Categorías</h2>
             <div className="menu-categorias">
               <button
-                className={`menu-categoria-btn ${categoriaActiva === null ? 'menu-categoria-active' : ''}`}
+                className={`menu-cat-btn ${categoriaActiva === null ? 'menu-cat-active' : ''}`}
                 onClick={() => setCategoriaActiva(null)}
               >
                 <span className="material-symbols-outlined">menu_book</span>
@@ -137,7 +110,7 @@ function MenuPage() {
               {categorias.map((cat) => (
                 <button
                   key={cat.id}
-                  className={`menu-categoria-btn ${categoriaActiva === cat.id || categoriaActiva === cat.nombre ? 'menu-categoria-active' : ''}`}
+                  className={`menu-cat-btn ${categoriaActiva === cat.id || categoriaActiva === cat.nombre ? 'menu-cat-active' : ''}`}
                   onClick={() => setCategoriaActiva(cat.id || cat.nombre)}
                 >
                   <span className="material-symbols-outlined">local_cafe</span>
@@ -152,7 +125,7 @@ function MenuPage() {
           <div className="menu-header">
             <div>
               <h2 className="menu-title">Menú Principal</h2>
-              <p className="menu-subtitle">Selecciona tus favoritos para empezar el día.</p>
+              <p className="menu-subtitle">Selecciona tus favoritos para empezar el día ☕</p>
             </div>
             <div className="menu-search">
               <span className="material-symbols-outlined menu-search-icon">search</span>
@@ -168,8 +141,8 @@ function MenuPage() {
 
           {productosFiltrados.length === 0 ? (
             <div className="empty-state">
-              <span className="material-symbols-outlined empty-state-icon">search_off</span>
-              <p className="font-body-md">No hay productos disponibles</p>
+              <span className="material-symbols-outlined">search_off</span>
+              <p>No hay productos disponibles</p>
             </div>
           ) : (
             <div className="productos-grid">

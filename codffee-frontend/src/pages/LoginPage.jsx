@@ -35,10 +35,12 @@ function LoginPage() {
 
       Swal.fire({
         icon: 'success',
-        title: 'Bienvenido',
+        title: '¡Bienvenido!',
         text: data.mensaje || 'Inicio de sesión exitoso',
         timer: 1500,
         showConfirmButton: false,
+        background: '#221e1a',
+        color: '#f5efe8',
       })
 
       redirectByRole(data.rol)
@@ -47,6 +49,8 @@ function LoginPage() {
         icon: 'error',
         title: 'Error al iniciar sesión',
         text: error.response?.data?.mensaje || 'Credenciales incorrectas',
+        background: '#221e1a',
+        color: '#f5efe8',
       })
     } finally {
       setCargando(false)
@@ -59,20 +63,20 @@ function LoginPage() {
       <main className="login-container">
         <div className="login-card">
           <div className="login-card-header">
-            <h1 className="login-title">Codffee</h1>
+            <h1 className="login-logo">☕ Codffee</h1>
             <p className="login-subtitle">Sistema de pedidos para cafetería</p>
           </div>
           <div className="login-card-body">
             <form onSubmit={handleSubmit}>
-              <div className="login-field">
-                <label className="login-label" htmlFor="correo">Correo Electrónico</label>
-                <div className="login-input-wrapper">
-                  <span className="material-symbols-outlined login-input-icon">mail</span>
+              <div className="input-group">
+                <label className="input-label" htmlFor="correo">Correo Electrónico</label>
+                <div className="input-wrapper">
+                  <span className="material-symbols-outlined input-icon">mail</span>
                   <input
                     id="correo"
                     type="email"
                     name="correo"
-                    className="login-input"
+                    className="input-field"
                     value={form.correo}
                     onChange={handleChange}
                     placeholder="estudiante@universidad.edu"
@@ -80,15 +84,15 @@ function LoginPage() {
                   />
                 </div>
               </div>
-              <div className="login-field">
-                <label className="login-label" htmlFor="contrasena">Contraseña</label>
-                <div className="login-input-wrapper">
-                  <span className="material-symbols-outlined login-input-icon">lock</span>
+              <div className="input-group">
+                <label className="input-label" htmlFor="contrasena">Contraseña</label>
+                <div className="input-wrapper">
+                  <span className="material-symbols-outlined input-icon">lock</span>
                   <input
                     id="contrasena"
                     type="password"
                     name="contrasena"
-                    className="login-input"
+                    className="input-field"
                     value={form.contrasena}
                     onChange={handleChange}
                     placeholder="••••••••"
@@ -96,29 +100,25 @@ function LoginPage() {
                   />
                 </div>
               </div>
-              <button className="login-btn" type="submit" disabled={cargando}>
+              <button className="btn btn-primary btn-full" type="submit" disabled={cargando} style={{ marginTop: 8 }}>
+                <span className="material-symbols-outlined">login</span>
                 {cargando ? 'Ingresando...' : 'Iniciar sesión'}
               </button>
             </form>
-            <div className="login-card-footer-row mt-lg">
-              <button className="login-btn login-register-btn" onClick={() => navigate('/registro')}>
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>person_add</span>
-                Crear cuenta nueva (Cliente)
+            <div style={{ marginTop: 20 }}>
+              <button className="btn btn-secondary btn-full" onClick={() => navigate('/registro')}>
+                <span className="material-symbols-outlined">person_add</span>
+                Crear cuenta nueva
               </button>
             </div>
           </div>
           <div className="login-card-footer">
-            <div className="login-card-footer-row mb-3">
-              <p className="font-body-sm text-center">
-                ¿No tienes cuenta?{' '}
-                <a href="/registro" className="login-register-link" onClick={(e) => { e.preventDefault(); navigate('/registro') }}>
-                  Regístrate aquí
-                </a>
-              </p>
-            </div>
+            <p className="login-footer-text">
+              ¿No tienes cuenta? <a href="/registro" onClick={(e) => { e.preventDefault(); navigate('/registro') }} style={{ color: 'var(--accent)', fontWeight: 600 }}>Regístrate aquí</a>
+            </p>
           </div>
         </div>
-        <p className="login-footer-note">Acceso exclusivo para personal y estudiantes autorizados.</p>
+        <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--text-muted)', marginTop: 16 }}>Acceso exclusivo para personal y estudiantes autorizados.</p>
       </main>
     </div>
   )
