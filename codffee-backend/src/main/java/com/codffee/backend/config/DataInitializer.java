@@ -40,12 +40,16 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void crearUsuariosIniciales() {
-        // Limpiar otros usuarios que no correspondan
+        // Limpiar otros usuarios que no correspondan (con protección de claves foráneas)
         java.util.List<Usuario> todosLosUsuarios = usuarioRepository.findAll();
         for (Usuario u : todosLosUsuarios) {
             if (!u.getCorreo().equals("codffee.notificaciones.api@gmail.com") &&
                     !u.getCorreo().equals("willy2019031000merlin@gmail.com")) {
-                usuarioRepository.delete(u);
+                try {
+                    usuarioRepository.delete(u);
+                } catch (Exception e) {
+                    System.out.println("No se pudo eliminar el usuario [" + u.getCorreo() + "] debido a restricciones de clave foránea.");
+                }
             }
         }
 
@@ -72,6 +76,13 @@ public class DataInitializer implements CommandLineRunner {
             personal.setFechaRegistro(LocalDateTime.now());
         }
         usuarioRepository.save(personal);
+
+        // Debug: Imprimir usuarios actuales para verificar en Render
+        System.out.println("=== DEBUG: USUARIOS EN BD INICIALIZADOS ===");
+        usuarioRepository.findAll().forEach(u -> {
+            System.out.println("-> Correo: [" + u.getCorreo() + "] | Rol: [" + u.getRol() + "] | Activo: [" + u.getActivo() + "]");
+        });
+        System.out.println("==========================================");
     }
 
     private void crearCategoriasYProductosIniciales() {
