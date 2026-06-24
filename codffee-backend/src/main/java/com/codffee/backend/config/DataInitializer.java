@@ -40,29 +40,38 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void crearUsuariosIniciales() {
-        // 1. Administrador: codffee.notificaciones.api@gmail.com / Admin123
-        if (!usuarioRepository.existsByCorreo("codffee.notificaciones.api@gmail.com")) {
-            Usuario admin = new Usuario();
-            admin.setNombre("Administrador Codffee");
-            admin.setCorreo("codffee.notificaciones.api@gmail.com");
-            admin.setContrasena(passwordEncoder.encode("Admin123"));
-            admin.setRol(Rol.ADMIN);
-            admin.setActivo(true);
-            admin.setFechaRegistro(LocalDateTime.now());
-            usuarioRepository.save(admin);
+        // Limpiar otros usuarios que no correspondan
+        java.util.List<Usuario> todosLosUsuarios = usuarioRepository.findAll();
+        for (Usuario u : todosLosUsuarios) {
+            if (!u.getCorreo().equals("codffee.notificaciones.api@gmail.com") &&
+                    !u.getCorreo().equals("willy2019031000merlin@gmail.com")) {
+                usuarioRepository.delete(u);
+            }
         }
 
-        // 2. Personal: willy2019031000merlin@gmail.com / Wilfrido23
-        if (!usuarioRepository.existsByCorreo("willy2019031000merlin@gmail.com")) {
-            Usuario personal = new Usuario();
-            personal.setNombre("Personal Cafetería");
-            personal.setCorreo("willy2019031000merlin@gmail.com");
-            personal.setContrasena(passwordEncoder.encode("Wilfrido23"));
-            personal.setRol(Rol.PERSONAL);
-            personal.setActivo(true);
-            personal.setFechaRegistro(LocalDateTime.now());
-            usuarioRepository.save(personal);
+        // 1. Administrador: codffee.notificaciones.api@gmail.com / Admin123
+        Usuario admin = usuarioRepository.findByCorreo("codffee.notificaciones.api@gmail.com").orElse(new Usuario());
+        admin.setNombre("Administrador Codffee");
+        admin.setCorreo("codffee.notificaciones.api@gmail.com");
+        admin.setContrasena(passwordEncoder.encode("Admin123"));
+        admin.setRol(Rol.ADMIN);
+        admin.setActivo(true);
+        if (admin.getId() == null) {
+            admin.setFechaRegistro(LocalDateTime.now());
         }
+        usuarioRepository.save(admin);
+
+        // 2. Personal: willy2019031000merlin@gmail.com / Wilfrido23
+        Usuario personal = usuarioRepository.findByCorreo("willy2019031000merlin@gmail.com").orElse(new Usuario());
+        personal.setNombre("Personal Cafetería");
+        personal.setCorreo("willy2019031000merlin@gmail.com");
+        personal.setContrasena(passwordEncoder.encode("Wilfrido23"));
+        personal.setRol(Rol.PERSONAL);
+        personal.setActivo(true);
+        if (personal.getId() == null) {
+            personal.setFechaRegistro(LocalDateTime.now());
+        }
+        usuarioRepository.save(personal);
     }
 
     private void crearCategoriasYProductosIniciales() {
