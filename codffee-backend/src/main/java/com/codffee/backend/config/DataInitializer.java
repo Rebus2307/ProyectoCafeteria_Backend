@@ -40,11 +40,11 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void crearUsuariosIniciales() {
-        // 1. Administrador: codffee.notificaciones@gmail.com / Admin123
-        if (!usuarioRepository.existsByCorreo("codffee.notificaciones@gmail.com")) {
+        // 1. Administrador: codffee.notificaciones.api@gmail.com / Admin123
+        if (!usuarioRepository.existsByCorreo("codffee.notificaciones.api@gmail.com")) {
             Usuario admin = new Usuario();
             admin.setNombre("Administrador Codffee");
-            admin.setCorreo("codffee.notificaciones@gmail.com");
+            admin.setCorreo("codffee.notificaciones.api@gmail.com");
             admin.setContrasena(passwordEncoder.encode("Admin123"));
             admin.setRol(Rol.ADMIN);
             admin.setActivo(true);
@@ -52,28 +52,16 @@ public class DataInitializer implements CommandLineRunner {
             usuarioRepository.save(admin);
         }
 
-        // 2. Personal: wcruzm1800@alumnmo.ipn.mx / Personal123
-        if (!usuarioRepository.existsByCorreo("wcruzm1800@alumnmo.ipn.mx")) {
+        // 2. Personal: willy2019031000merlin@gmail.com / Wilfrido23
+        if (!usuarioRepository.existsByCorreo("willy2019031000merlin@gmail.com")) {
             Usuario personal = new Usuario();
             personal.setNombre("Personal Cafetería");
-            personal.setCorreo("wcruzm1800@alumnmo.ipn.mx");
-            personal.setContrasena(passwordEncoder.encode("Personal123"));
+            personal.setCorreo("willy2019031000merlin@gmail.com");
+            personal.setContrasena(passwordEncoder.encode("Wilfrido23"));
             personal.setRol(Rol.PERSONAL);
             personal.setActivo(true);
             personal.setFechaRegistro(LocalDateTime.now());
             usuarioRepository.save(personal);
-        }
-
-        // 3. Cliente: willy2019031000merlin@gmail.com / Cliente123
-        if (!usuarioRepository.existsByCorreo("willy2019031000merlin@gmail.com")) {
-            Usuario cliente = new Usuario();
-            cliente.setNombre("Cliente Prueba");
-            cliente.setCorreo("willy2019031000merlin@gmail.com");
-            cliente.setContrasena(passwordEncoder.encode("Cliente123"));
-            cliente.setRol(Rol.CLIENTE);
-            cliente.setActivo(true);
-            cliente.setFechaRegistro(LocalDateTime.now());
-            usuarioRepository.save(cliente);
         }
     }
 

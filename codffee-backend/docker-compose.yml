@@ -1,15 +1,16 @@
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: codffee-mysql
+  yugabyte:
+    image: yugabytedb/yugabyte:latest
+    container_name: codffee-yugabyte
     restart: always
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    command: bin/yugabyted start --daemon=false --listen=0.0.0.0
     ports:
-      - "3307:3306"
+      - "5433:5433"
+      - "7000:7000"
+      - "9000:9000"
+      - "15433:15433"
     volumes:
-      - codffee_mysql_data:/var/lib/mysql
+      - codffee_yugabyte_data:/home/yugabyte/var
     networks:
       - codffee-network
 
@@ -20,12 +21,12 @@ services:
     container_name: codffee-backend
     restart: always
     depends_on:
-      - mysql
+      - yugabyte
     ports:
       - "8080:8080"
     environment:
       SERVER_PORT: 8080
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&serverTimezone=America/Mexico_City&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:postgresql://yugabyte:5433/yugabyte
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
 
@@ -40,7 +41,7 @@ services:
       - codffee-network
 
 volumes:
-  codffee_mysql_data:
+  codffee_yugabyte_data:
 
 networks:
   codffee-network:
