@@ -19,7 +19,7 @@ public class CorreoService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void enviarCorreoSimple(String destinatario, String asunto, String mensaje) {
+    public boolean enviarCorreoSimple(String destinatario, String asunto, String mensaje) {
         try {
             SimpleMailMessage correo = new SimpleMailMessage();
 
@@ -29,8 +29,10 @@ public class CorreoService {
             correo.setText(mensaje);
 
             javaMailSender.send(correo);
+            return true;
         } catch (MailException e) {
-            throw new SolicitudInvalidaException("No se pudo enviar el correo: " + e.getMessage());
+            System.err.println("Error enviando correo a [" + destinatario + "]: " + e.getMessage());
+            return false;
         }
     }
 }

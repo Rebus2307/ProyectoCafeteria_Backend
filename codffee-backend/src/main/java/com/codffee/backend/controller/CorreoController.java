@@ -15,12 +15,16 @@ public class CorreoController {
 
     @PostMapping("/prueba")
     public String enviarCorreoPrueba(@RequestParam String destinatario) {
-        correoService.enviarCorreoSimple(
+        boolean enviado = correoService.enviarCorreoSimple(
                 destinatario,
                 "Correo de prueba - Codffee",
                 "Hola, este es un correo de prueba enviado desde el backend de Codffee."
         );
 
-        return "Correo enviado correctamente a " + destinatario;
+        if (enviado) {
+            return "Correo enviado correctamente a " + destinatario;
+        } else {
+            return "Error: No se pudo enviar el correo a " + destinatario + ". Revisa los logs del servidor.";
+        }
     }
 }
